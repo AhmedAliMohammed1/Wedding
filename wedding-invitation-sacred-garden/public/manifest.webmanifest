@@ -1,0 +1,17 @@
+{
+  "name": "Ahmed & Nada — Wedding Invitation",
+  "short_name": "A & N",
+  "description": "A private digital wedding invitation.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F2E8",
+  "theme_color": "#3F4A3C",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

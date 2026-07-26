@@ -1,0 +1,93 @@
+# Validation Report
+
+Validation date: July 26, 2026
+
+## Environment
+
+- Node.js: `v24.14.0`
+- npm CLI used for final npm commands: `11.6.0`
+- Operating system: Windows
+- Project: `wedding-invitation-sacred-garden`
+
+## Final invitation details
+
+- Couple: Ahmed and Nada
+- Date: Tuesday, August 11, 2026
+- Venue: Le Palace Garden
+- Location: Zagazig, Sharqia Governorate, Egypt
+- Timezone: `Africa/Cairo`
+- The supplied Google Maps embed URL is wired into the venue section.
+
+## Commands executed
+
+The environment’s npm CLI was supplied through a temporary runner; the commands executed against this project were the standard npm commands shown below.
+
+| Command | Result |
+| --- | --- |
+| `npm install` | Passed — lockfile version 3, dependencies up to date |
+| `npm run check:dev` | Passed — Vite development server responded at `http://127.0.0.1:5173/` and shut down cleanly |
+| `npm run typecheck` | Passed — strict TypeScript project build, no errors |
+| `npm run lint` | Passed — ESLint completed with zero errors and zero warnings |
+| `npm run test` | Passed — 4 test files, 11 tests |
+| `npm run build` | Passed — 2,467 modules transformed and `dist/` created |
+| `npm run test:e2e` | Passed — 8 Playwright projects |
+
+## Test coverage exercised
+
+- Countdown formatting, invalid date, and post-event state
+- RSVP required-field validation
+- Configured guest limit
+- Conditional guest-count and meal fields
+- Local successful RSVP state
+- Accessible music play/pause toggle
+- Central configuration loading
+- Disabled optional gift section
+- Tap-to-open entrance action
+
+## Production browser smoke test
+
+Passed in installed Chromium-family browsers at:
+
+- 320 × 568
+- 375 × 667
+- 390 × 844
+- 430 × 932
+- 768 × 1024
+- 1024 × 768
+- 1440 × 900
+- 1920 × 1080
+
+The test verified page load, entrance opening, scroll unlock, countdown visibility, gallery navigation, venue/map markup, RSVP validation, absence of unexpected console errors, and no horizontal overflow.
+
+## Netlify verification
+
+- `dist/index.html` exists at the deployment root.
+- Static form `wedding-rsvp` is present in generated HTML.
+- `data-netlify="true"` is present.
+- The `form-name` field and honeypot field are present.
+- React and static forms use matching field names.
+- SPA redirect and publish directory are configured in `netlify.toml`.
+- Event JSON-LD, canonical metadata, Open Graph metadata, manifest, robots, and sitemap files are present.
+
+## Asset and security checks
+
+- Runtime images, social preview, fonts, and audio are local.
+- Hero and gallery images have explicit dimensions.
+- Gallery images use WebP placeholders.
+- No private keys, access tokens, passwords, or environment files are included.
+- `node_modules`, test artifacts, caches, and source maps are excluded from the source ZIP.
+
+## Known limitations
+
+- Photographs are original placeholders intended to be replaced with the couple’s final assets.
+- The selected background music is stored locally from the supplied reference page; permission or licensing should be confirmed before public distribution.
+- The canonical deployment URL, sitemap URL, robots sitemap URL, and placeholder phone must be updated before public launch.
+- Google Maps requires an internet connection.
+- Local RSVP success is simulated; a real form submission must be tested after Netlify deployment.
+- Lighthouse score targets were considered through local assets, lazy loading, code splitting, and reduced font subsets, but no hosted Lighthouse run was recorded because final network and CDN conditions are deployment-specific.
+
+## Final paths
+
+- Project folder: `C:\Users\LOQ\OneDrive\Documents\Wedding\wedding-invitation-sacred-garden`
+- Source ZIP: `C:\Users\LOQ\OneDrive\Documents\Wedding\wedding-invitation-sacred-garden-source.zip`
+- Netlify ZIP: `C:\Users\LOQ\OneDrive\Documents\Wedding\wedding-invitation-sacred-garden-netlify.zip`

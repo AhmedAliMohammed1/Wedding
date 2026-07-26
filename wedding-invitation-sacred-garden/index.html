@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#3F4A3C" />
+    <meta name="description" content="__SITE_DESCRIPTION__" />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="__SITE_URL__" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="preload" as="image" href="/assets/images/hero-garden.webp" type="image/webp" fetchpriority="high" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="__SITE_TITLE__" />
+    <meta property="og:description" content="__SITE_DESCRIPTION__" />
+    <meta property="og:url" content="__SITE_URL__" />
+    <meta property="og:image" content="__SOCIAL_IMAGE__" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="__SITE_TITLE__" />
+    <meta name="twitter:description" content="__SITE_DESCRIPTION__" />
+    <meta name="twitter:image" content="__SOCIAL_IMAGE__" />
+    <script type="application/ld+json">__EVENT_JSON_LD__</script>
+    <title>__SITE_TITLE__</title>
+  </head>
+  <body>
+    <noscript>This invitation needs JavaScript enabled to display its interactive details.</noscript>
+    <form
+      name="wedding-rsvp"
+      method="POST"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+      hidden
+      aria-hidden="true"
+    >
+      <input type="hidden" name="form-name" value="wedding-rsvp" />
+      <input name="bot-field" />
+      <input name="guestName" />
+      <input name="email" type="email" />
+      <input name="phone" />
+      <input name="attendance" />
+      <input name="guestCount" type="number" />
+      <input name="mealPreference" />
+      <textarea name="dietaryRestrictions"></textarea>
+      <textarea name="message"></textarea>
+      <input name="consent" type="checkbox" />
+    </form>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
