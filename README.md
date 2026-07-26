@@ -62,7 +62,7 @@ For exact drag-and-drop and Git instructions, see [NETLIFY_DEPLOYMENT.md](NETLIF
 
 ## Assets
 
-All runtime assets are local in `public/assets`. The supplied images are original abstract botanical placeholders, not copied photographs. The configured background music is stored locally from the selected reference invitation; confirm that you have permission to use it before public distribution. See [ASSET_REPLACEMENT_GUIDE.md](ASSET_REPLACEMENT_GUIDE.md).
+All runtime assets are local in `public/assets`. The Le Palace Garden section uses the supplied venue photograph; the remaining decorative and gallery images are original abstract botanical placeholders. The configured background music is stored locally from the selected reference invitation; confirm that you have permission to use it before public distribution. See [ASSET_REPLACEMENT_GUIDE.md](ASSET_REPLACEMENT_GUIDE.md).
 
 ## Accessibility
 

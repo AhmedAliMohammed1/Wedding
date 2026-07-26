@@ -17,6 +17,7 @@ Validation date: July 26, 2026
 - Location: Zagazig, Sharqia Governorate, Egypt
 - Timezone: `Africa/Cairo`
 - The supplied Google Maps embed URL is wired into the venue section.
+- The supplied Le Palace Garden photograph is optimized as WebP and displayed inside the existing curved venue frame without changing its layout or styling.
 - The removed dress-code component has a migration-safe empty replacement and is excluded from TypeScript compilation so older extracted folders cannot retain the obsolete implementation.
 - Reservation, guest-count, meal, dietary, and Netlify form features are removed. Migration-safe empty replacements overwrite the obsolete RSVP implementation in older extracted folders.
 
@@ -75,7 +76,7 @@ The test verified page load, entrance opening, scroll unlock, the venue as the t
 
 ## Known limitations
 
-- Photographs are original placeholders intended to be replaced with the couple’s final assets.
+- Gallery and decorative images remain original placeholders intended to be replaced with the couple’s final assets.
 - The selected background music is stored locally from the supplied reference page; permission or licensing should be confirmed before public distribution.
 - The canonical deployment URL, sitemap URL, robots sitemap URL, and placeholder phone must be updated before public launch.
 - Google Maps requires an internet connection.

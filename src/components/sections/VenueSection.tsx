@@ -22,7 +22,7 @@ export function VenueSection({ invitation }: { invitation: InvitationConfig }) {
           <div className="venue-image-wrap" data-reveal>
             <ImageWithFallback
               src={invitation.venue.image}
-              alt="Atmospheric botanical placeholder for the wedding venue"
+              alt="Nighttime entrance to Le Palace Garden framed by flowers and palm leaves"
               width="1400"
               height="1000"
               loading="lazy"
