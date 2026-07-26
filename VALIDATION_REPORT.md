@@ -57,7 +57,7 @@ Passed in installed Chromium-family browsers at:
 - 1440 × 900
 - 1920 × 1080
 
-The test verified page load, entrance opening, scroll unlock, countdown visibility, gallery navigation, venue/map markup, RSVP validation, absence of unexpected console errors, and no horizontal overflow.
+The test verified page load, entrance opening, scroll unlock, the venue as the third section, removal of the dress-code section, countdown visibility, gallery navigation, venue/map markup, RSVP validation, absence of unexpected console errors, and no horizontal overflow.
 
 ## Netlify verification
 

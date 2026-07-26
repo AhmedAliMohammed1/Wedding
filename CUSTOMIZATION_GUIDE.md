@@ -54,10 +54,6 @@ Core colours are CSS variables at the top of `src/styles/global.css` and are mir
 
 The three local font families are Cormorant Garamond, Great Vibes, and Montserrat. Font imports are in `src/main.tsx`. To change a font, install the new `@fontsource` package, update those imports, then update the matching `font-family` rules.
 
-## Dress code
-
-Edit the `dressCode` title, description, guidance, and colour list. Each colour needs a plain-language `name` and hexadecimal `hex` value. The visible name is important for accessibility.
-
 ## Gift section
 
 Set `gift.enabled` to `false` to remove the entire section. When enabled, edit the title, message, preference, button label, and URL. Do not publish private bank details unless the couple has explicitly chosen to do so.

@@ -11,7 +11,6 @@ import { CoupleStory } from './components/sections/CoupleStory';
 import { EventTimeline } from './components/sections/EventTimeline';
 import { PhotoGallery } from './components/gallery/PhotoGallery';
 import { VenueSection } from './components/sections/VenueSection';
-import { DressCodeSection } from './components/sections/DressCodeSection';
 import { GiftSection } from './components/sections/GiftSection';
 import { RSVPForm } from './components/forms/RSVPForm';
 import { ClosingSection } from './components/sections/ClosingSection';
@@ -85,12 +84,11 @@ export function App() {
       >
         <HeroSection invitation={invitation} />
         <WelcomeSection invitation={invitation} />
+        <VenueSection invitation={invitation} />
         <Countdown weddingDate={invitation.weddingDate} timezone={invitation.timezone} />
         <CoupleStory invitation={invitation} />
         <EventTimeline invitation={invitation} />
         <PhotoGallery gallery={invitation.gallery} />
-        <VenueSection invitation={invitation} />
-        <DressCodeSection invitation={invitation} />
         <GiftSection gift={invitation.gift} />
         <RSVPForm invitation={invitation} />
         <ClosingSection invitation={invitation} />

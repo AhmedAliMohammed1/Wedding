@@ -15,11 +15,6 @@ export interface GalleryItem {
   height: number;
 }
 
-export interface DressColor {
-  name: string;
-  hex: string;
-}
-
 export interface InvitationConfig {
   brideName: string;
   groomName: string;
@@ -46,12 +41,6 @@ export interface InvitationConfig {
     image: string;
   };
   schedule: ScheduleItem[];
-  dressCode: {
-    title: string;
-    description: string;
-    guidance: string;
-    colors: DressColor[];
-  };
   gift: {
     enabled: boolean;
     title: string;

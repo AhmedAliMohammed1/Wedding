@@ -2,7 +2,7 @@
 
 A production-ready, mobile-first digital wedding invitation for Ahmed and Nada. The experience combines an elegant tap-to-open entrance, user-initiated music, editorial botanical art, cinematic motion, practical event details, and a Netlify-ready RSVP form.
 
-All names, dates, messages, venue details, images, dress guidance, RSVP rules, and optional sections are controlled from one file: `src/config/invitation.ts`.
+All names, dates, messages, venue details, images, RSVP rules, and optional sections are controlled from one file: `src/config/invitation.ts`.
 
 ## Features
 
@@ -11,7 +11,7 @@ All names, dates, messages, venue details, images, dress guidance, RSVP rules, a
 - Full-screen animated hero with botanical frame and reduced-motion support
 - Live timezone-safe countdown with a post-event celebration state
 - Editorial story composition, animated event timeline, and swipe gallery with lightbox
-- Venue details, key-free Google Maps embed, dress code, gifts, and closing message
+- Third-page venue details, key-free Google Maps embed, gifts, and closing message
 - React Hook Form + Zod RSVP validation with Netlify Forms and honeypot protection
 - Privacy modal, error boundary, keyboard support, visible focus states, and semantic page structure
 - Local WebP artwork, local font files, original social preview, manifest, sitemap, robots, and Event JSON-LD

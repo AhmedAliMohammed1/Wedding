@@ -18,6 +18,11 @@ test('invitation opens and core sections remain usable without overflow', async 
   await expect(page.getByRole('heading', { name: 'Dear Friends and Family' })).toBeAttached();
   await expect(page.getByText('﴿ بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ ﴾')).toBeAttached();
   await expect(page.locator('audio')).toHaveAttribute('src', '/assets/audio/divenire.mp3');
+  const sectionIds = await page.locator('main > section').evaluateAll((sections) =>
+    sections.map((section) => section.id)
+  );
+  expect(sectionIds.slice(0, 3)).toEqual(['invitation', 'welcome', 'venue']);
+  expect(sectionIds).not.toContain('dress-code');
   await expect(page.getByRole('heading', { name: /until our garden celebration/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /fragments of our world/i })).toBeAttached();
   const nextGalleryButton = page.locator('.gallery-next');

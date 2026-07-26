@@ -61,19 +61,6 @@ export const invitation: InvitationConfig = {
       icon: 'celebration'
     }
   ],
-  dressCode: {
-    title: 'Garden formal',
-    description:
-      'Elegant evening attire with soft tailoring, flowing silhouettes, and shoes made for a garden path.',
-    guidance: 'We invite warm neutrals, muted botanicals, and gentle jewel tones. Please reserve white for the couple.',
-    colors: [
-      { name: 'Sage', hex: '#87937D' },
-      { name: 'Champagne', hex: '#D6C2A6' },
-      { name: 'Muted rose', hex: '#C9A9A6' },
-      { name: 'Deep olive', hex: '#3F4A3C' },
-      { name: 'Dusty blue', hex: '#83949B' }
-    ]
-  },
   gift: {
     enabled: true,
     title: 'With love, not obligation',
