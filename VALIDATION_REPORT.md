@@ -17,6 +17,7 @@ Validation date: July 26, 2026
 - Location: Zagazig, Sharqia Governorate, Egypt
 - Timezone: `Africa/Cairo`
 - The supplied Google Maps embed URL is wired into the venue section.
+- The removed dress-code component has a migration-safe empty replacement and is excluded from TypeScript compilation so older extracted folders cannot retain the obsolete implementation.
 
 ## Commands executed
 
