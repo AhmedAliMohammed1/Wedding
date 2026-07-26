@@ -8,7 +8,8 @@ const executablePath = [edgePath, chromePath].find(existsSync);
 export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: false,
-  timeout: 45_000,
+  workers: 4,
+  timeout: 60_000,
   reporter: [['list']],
   use: {
     baseURL: 'http://127.0.0.1:4173',

@@ -22,5 +22,9 @@
     "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
   "include": ["src", "tests", "vite.config.ts"],
-  "exclude": ["src/components/sections/DressCodeSection.tsx"]
+  "exclude": [
+    "src/components/sections/DressCodeSection.tsx",
+    "src/components/forms/RSVPForm.tsx",
+    "src/lib/rsvpSchema.ts"
+  ]
 }

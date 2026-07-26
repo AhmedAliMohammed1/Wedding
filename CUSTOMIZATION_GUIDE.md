@@ -58,14 +58,6 @@ The three local font families are Cormorant Garamond, Great Vibes, and Montserra
 
 Set `gift.enabled` to `false` to remove the entire section. When enabled, edit the title, message, preference, button label, and URL. Do not publish private bank details unless the couple has explicitly chosen to do so.
 
-## RSVP
-
-- Change `rsvp.deadline`.
-- Change `rsvp.maxGuests` to control the guest-count selector and validation.
-- Edit labels or choices in `src/components/forms/RSVPForm.tsx` only if the questions themselves must change.
-
-If fields are added or renamed, make the same change in both the React form and the hidden static `wedding-rsvp` form in `index.html`. Netlify detects fields from the static form during deployment.
-
 ## Social preview and deployment URL
 
 Edit `social.title`, `social.description`, `social.siteUrl`, and `social.image`. Then replace the placeholder URL in:
@@ -91,4 +83,4 @@ npm run build
 npm run preview
 ```
 
-Open the invitation on a phone and desktop, test the music, gallery, map, directions link, privacy note, and one real RSVP after Netlify deployment.
+Open the invitation on a phone and desktop, then test the music, gallery, map, directions link, and contact email.

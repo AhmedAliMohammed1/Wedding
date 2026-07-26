@@ -12,7 +12,6 @@ import { EventTimeline } from './components/sections/EventTimeline';
 import { PhotoGallery } from './components/gallery/PhotoGallery';
 import { VenueSection } from './components/sections/VenueSection';
 import { GiftSection } from './components/sections/GiftSection';
-import { RSVPForm } from './components/forms/RSVPForm';
 import { ClosingSection } from './components/sections/ClosingSection';
 import { Footer } from './components/sections/Footer';
 import { useGsapScroll } from './hooks/useGsapScroll';
@@ -90,7 +89,6 @@ export function App() {
         <EventTimeline invitation={invitation} />
         <PhotoGallery gallery={invitation.gallery} />
         <GiftSection gift={invitation.gift} />
-        <RSVPForm invitation={invitation} />
         <ClosingSection invitation={invitation} />
         <Footer invitation={invitation} />
       </main>

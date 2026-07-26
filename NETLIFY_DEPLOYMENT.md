@@ -10,7 +10,7 @@ Use `wedding-invitation-sacred-garden-netlify.zip`, supplied next to the project
 2. Open **Sites** or **Deploys** and choose the manual drag-and-drop option.
 3. Drag `wedding-invitation-sacred-garden-netlify.zip` into the upload area.
 4. Wait for the production deployment to finish.
-5. Open the generated Netlify URL and submit one test RSVP.
+5. Open the generated Netlify URL and inspect the invitation on both mobile and desktop.
 
 The ZIP contains `index.html` at its root. Do not upload the source ZIP for drag-and-drop deployment.
 
@@ -27,18 +27,6 @@ The ZIP contains `index.html` at its root. Do not upload the source ZIP for drag
 
 No environment variables are required. The same settings are already defined in `netlify.toml`.
 
-## RSVP submissions
-
-After the first deployment, Netlify should list a form called `wedding-rsvp`.
-
-1. Open the site in a private browser window.
-2. Submit a complete RSVP.
-3. In Netlify, open **Forms → wedding-rsvp**.
-4. Confirm the response and spam status.
-5. Configure Netlify form notification emails if desired.
-
-Local previews simulate success and do not create real submissions.
-
 ## Custom domain and HTTPS
 
 1. Open **Domain management** for the site.
@@ -54,6 +42,6 @@ Local previews simulate success and do not create real submissions.
 - Countdown uses the correct local wedding time.
 - Gallery swipes and keyboard arrows work.
 - Map loads and directions open in a new tab.
-- RSVP appears in Netlify Forms.
+- No reservation, guest-count, or meal form is present.
 - Social preview shows the final names, date, and image.
 - The site works on iOS Safari and Android Chrome.

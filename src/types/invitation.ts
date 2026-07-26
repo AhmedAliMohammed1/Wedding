@@ -53,10 +53,6 @@ export interface InvitationConfig {
     email: string;
     phone: string;
   };
-  rsvp: {
-    deadline: string;
-    maxGuests: number;
-  };
   gallery: GalleryItem[];
   images: {
     hero: string;

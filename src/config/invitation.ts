@@ -74,10 +74,6 @@ export const invitation: InvitationConfig = {
     email: 'ahmedelsaify213@gmail.com',
     phone: '+20 100 000 0000'
   },
-  rsvp: {
-    deadline: 'July 31, 2026',
-    maxGuests: 5
-  },
   gallery: [
     {
       src: '/assets/images/gallery-01.webp',

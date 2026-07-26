@@ -18,6 +18,7 @@ Validation date: July 26, 2026
 - Timezone: `Africa/Cairo`
 - The supplied Google Maps embed URL is wired into the venue section.
 - The removed dress-code component has a migration-safe empty replacement and is excluded from TypeScript compilation so older extracted folders cannot retain the obsolete implementation.
+- Reservation, guest-count, meal, dietary, and Netlify form features are removed. Migration-safe empty replacements overwrite the obsolete RSVP implementation in older extracted folders.
 
 ## Commands executed
 
@@ -29,17 +30,14 @@ The environment’s npm CLI was supplied through a temporary runner; the command
 | `npm run check:dev` | Passed — Vite development server responded at `http://127.0.0.1:5173/` and shut down cleanly |
 | `npm run typecheck` | Passed — strict TypeScript project build, no errors |
 | `npm run lint` | Passed — ESLint completed with zero errors and zero warnings |
-| `npm run test` | Passed — 4 test files, 11 tests |
-| `npm run build` | Passed — 2,467 modules transformed and `dist/` created |
+| `npm run test` | Passed — 4 test files, 8 tests |
+| `npm run build` | Passed — production `dist/` created |
 | `npm run test:e2e` | Passed — 8 Playwright projects |
 
 ## Test coverage exercised
 
 - Countdown formatting, invalid date, and post-event state
-- RSVP required-field validation
-- Configured guest limit
-- Conditional guest-count and meal fields
-- Local successful RSVP state
+- Absence of RSVP configuration, reservation forms, and meal fields
 - Accessible music play/pause toggle
 - Central configuration loading
 - Disabled optional gift section
@@ -58,15 +56,12 @@ Passed in installed Chromium-family browsers at:
 - 1440 × 900
 - 1920 × 1080
 
-The test verified page load, entrance opening, scroll unlock, the venue as the third section, removal of the dress-code section, countdown visibility, gallery navigation, venue/map markup, RSVP validation, absence of unexpected console errors, and no horizontal overflow.
+The test verified page load, entrance opening, scroll unlock, the venue as the third section, removal of the dress-code and reservation sections, absence of forms and meal fields, countdown visibility, gallery navigation, venue/map markup, absence of unexpected console errors, and no horizontal overflow.
 
 ## Netlify verification
 
 - `dist/index.html` exists at the deployment root.
-- Static form `wedding-rsvp` is present in generated HTML.
-- `data-netlify="true"` is present.
-- The `form-name` field and honeypot field are present.
-- React and static forms use matching field names.
+- No reservation or Netlify form markup is present.
 - SPA redirect and publish directory are configured in `netlify.toml`.
 - Event JSON-LD, canonical metadata, Open Graph metadata, manifest, robots, and sitemap files are present.
 
@@ -84,7 +79,6 @@ The test verified page load, entrance opening, scroll unlock, the venue as the t
 - The selected background music is stored locally from the supplied reference page; permission or licensing should be confirmed before public distribution.
 - The canonical deployment URL, sitemap URL, robots sitemap URL, and placeholder phone must be updated before public launch.
 - Google Maps requires an internet connection.
-- Local RSVP success is simulated; a real form submission must be tested after Netlify deployment.
 - Lighthouse score targets were considered through local assets, lazy loading, code splitting, and reduced font subsets, but no hosted Lighthouse run was recorded because final network and CDN conditions are deployment-specific.
 
 ## Final paths

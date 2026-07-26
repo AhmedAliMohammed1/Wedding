@@ -12,7 +12,9 @@ export default tseslint.config(
       'playwright-report',
       'test-results',
       'coverage',
-      'src/components/sections/DressCodeSection.tsx'
+      'src/components/sections/DressCodeSection.tsx',
+      'src/components/forms/RSVPForm.tsx',
+      'src/lib/rsvpSchema.ts'
     ]
   },
   {

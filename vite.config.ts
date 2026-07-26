@@ -59,8 +59,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           animation: ['gsap', 'framer-motion'],
-          gallery: ['swiper'],
-          forms: ['react-hook-form', 'zod', '@hookform/resolvers']
+          gallery: ['swiper']
         }
       }
     }
