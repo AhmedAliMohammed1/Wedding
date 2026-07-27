@@ -1,6 +1,6 @@
 # Vercel Deployment
 
-The invitation includes a native Vercel Function at `/api/notes`. Guest notes are stored as private JSON objects in Vercel Blob, so they remain available across browsers, devices, and later deployments.
+The invitation includes a native Vercel Function at `/api/notes`. Guest notes are stored as JSON objects in Vercel Blob, so they remain available across browsers, devices, and later deployments. The function automatically supports both Private and Public Blob stores; Private is recommended.
 
 ## First deployment
 
@@ -20,7 +20,7 @@ This is required once for the Vercel project:
 1. Open the project in the Vercel dashboard.
 2. Select **Storage**.
 3. Choose **Create Database**, then **Blob**.
-4. Set the Blob store access to **Private**.
+4. Set the Blob store access to **Private** when Vercel offers that choice. An existing Public store is also supported automatically.
 5. Create the store and connect it to this same project.
 6. Enable the store for Production and Preview environments.
 7. Confirm Vercel added `BLOB_READ_WRITE_TOKEN` to the project.
@@ -38,13 +38,14 @@ Vercel creates and manages the token automatically. Never add it to the frontend
 
 If the page asks for a Vercel Blob store, the function is deployed correctly but the store is not yet connected. Complete the storage steps above and redeploy.
 
+If the page says Vercel cannot access the connected store, reconnect that store to the project, confirm `BLOB_READ_WRITE_TOKEN` is enabled for the **Production** environment, and redeploy. The page now preserves this specific recovery instruction instead of replacing every server error with a generic unavailable message.
+
 ## Existing Vercel project
 
 If the invitation is already deployed:
 
 1. Replace or push the complete updated source project.
-2. Connect a Private Blob store using the steps above.
+2. Connect a Blob store using the steps above. Private is recommended, and Public is supported.
 3. Redeploy.
 
 The included `vercel.json` keeps SPA navigation working and applies the invitation’s security headers. Filesystem routes take priority, so `/api/notes` continues to resolve to the Vercel Function.
-

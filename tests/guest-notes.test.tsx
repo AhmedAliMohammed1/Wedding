@@ -9,6 +9,15 @@ const jsonResponse = (body: unknown, status = 200) =>
     headers: { 'Content-Type': 'application/json' }
   });
 
+const storageErrorResponse = (message: string, status = 503) =>
+  new Response(JSON.stringify({ error: message }), {
+    status,
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Guest-Notes-Error': 'storage'
+    }
+  });
+
 const guestNotesProps = {
   coupleNames: 'Ahmed & Nada',
   title: 'Leave a little love',
@@ -105,6 +114,24 @@ describe('guest notes section', () => {
 
     expect(await screen.findByText(/service is not connected on this deployment/i)).toBeInTheDocument();
     expect(screen.queryByText('[object Object]')).not.toBeInTheDocument();
+  });
+
+  it('shows the Vercel storage recovery instruction returned by the API', async () => {
+    const recoveryMessage =
+      'Vercel cannot access the connected Blob store. Reconnect the Blob store to this project, confirm BLOB_READ_WRITE_TOKEN is enabled for Production, and redeploy.';
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(storageErrorResponse(recoveryMessage));
+    vi.stubGlobal('fetch', fetchMock);
+    const user = userEvent.setup();
+    render(<GuestNotesSection {...guestNotesProps} />);
+
+    await user.click(screen.getByRole('radio', { name: /post anonymously/i }));
+    await user.type(screen.getByRole('textbox', { name: /your note/i }), 'A beautiful wish.');
+    await user.click(screen.getByRole('button', { name: /send note/i }));
+
+    expect(await screen.findByText(recoveryMessage)).toBeInTheDocument();
+    expect(screen.queryByText(/temporarily unavailable/i)).not.toBeInTheDocument();
   });
 
   it('detects a static SPA response when the Netlify function was not deployed', async () => {

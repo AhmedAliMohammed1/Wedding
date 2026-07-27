@@ -9,12 +9,23 @@ export interface GuestNotesStore {
   write: (note: GuestNote) => Promise<void>;
 }
 
-const jsonResponse = (data: unknown, status = 200) =>
+export class GuestNotesStorageError extends Error {
+  constructor(
+    message: string,
+    public readonly status = 503
+  ) {
+    super(message);
+    this.name = 'GuestNotesStorageError';
+  }
+}
+
+const jsonResponse = (data: unknown, status = 200, headers: Record<string, string> = {}) =>
   Response.json(data, {
     status,
     headers: {
       'Cache-Control': 'no-store',
-      'X-Content-Type-Options': 'nosniff'
+      'X-Content-Type-Options': 'nosniff',
+      ...headers
     }
   });
 
@@ -112,6 +123,13 @@ export const handleGuestNotesRequest = async (request: Request, store: GuestNote
     });
   } catch (error) {
     console.error('Guest notes request failed', error);
+
+    if (error instanceof GuestNotesStorageError) {
+      return jsonResponse({ error: error.message }, error.status, {
+        'X-Guest-Notes-Error': 'storage'
+      });
+    }
+
     return jsonResponse({ error: 'The notes are temporarily unavailable. Please try again.' }, 500);
   }
 };

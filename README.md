@@ -61,13 +61,13 @@ The “A gentle note” section lets visitors:
 - publish as **Anonymous** without storing their entered name;
 - reveal or hide all previous notes with one button.
 
-The browser sends notes to `/api/notes`. A shared server handler validates the content, discards names for anonymous posts, and blocks a hidden spam field. On Vercel, a native Function stores each note in a Private Vercel Blob store. On Netlify, the equivalent Function uses a strongly consistent Netlify Blobs store and platform rate limiting. Notes are rendered as plain React text, so visitor HTML is never injected into the page.
+The browser sends notes to `/api/notes`. A shared server handler validates the content, discards names for anonymous posts, and blocks a hidden spam field. On Vercel, a native Function stores each note in a Vercel Blob store and automatically supports either Private or Public access. On Netlify, the equivalent Function uses a strongly consistent Netlify Blobs store and platform rate limiting. Notes are rendered as plain React text, so visitor HTML is never injected into the page.
 
 For Vercel, follow `VERCEL_DEPLOYMENT.md`. For Netlify, follow `NETLIFY_DEPLOYMENT.md`.
 
 ## Vercel deployment
 
-Deploy the complete project and connect a **Private Vercel Blob** store from the project’s Storage page. Vercel then supplies `BLOB_READ_WRITE_TOKEN` to the server function automatically. Redeploy after connecting the store. See [VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md).
+Deploy the complete project and connect a **Vercel Blob** store from the project’s Storage page. Private access is recommended, but an existing Public store also works. Vercel then supplies `BLOB_READ_WRITE_TOKEN` to the server function automatically. Redeploy after connecting the store. See [VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md).
 
 ## Netlify deployment
 
@@ -99,7 +99,8 @@ Current Chrome, Edge, Firefox, Safari, iOS Safari, and Android Chrome are suppor
 - **Music does not start:** Browsers require a user gesture. Open the invitation or tap the music control.
 - **Music is unavailable:** Confirm the `music.src` file exists and its filename matches the configuration.
 - **Map is blank:** Confirm the embed URL uses HTTPS and allows iframe embedding. Directions remain available separately.
-- **Vercel asks for a Blob store:** Create and connect a Private Blob store in the Vercel project, then redeploy.
+- **Vercel asks for a Blob store:** Create and connect a Blob store in the Vercel project, then redeploy.
+- **Vercel cannot access the connected store:** Reconnect the store, enable `BLOB_READ_WRITE_TOKEN` for Production, and redeploy.
 - **The notes service is not connected:** Deploy the complete source project so the host receives `/api/notes`; a `dist`-only upload contains no server function.
 - **A note is rejected:** Keep the name between 2 and 60 characters when signing it and the message between 2 and 500 characters.
 - **A replaced image appears cropped:** Use the dimensions and focal-point advice in the asset guide.

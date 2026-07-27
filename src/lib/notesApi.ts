@@ -34,7 +34,7 @@ const extractErrorText = (value: unknown, depth = 0): string => {
 const statusMessage = (status: number, fallback: string) => {
   if (status === 404 || status === 405) return SERVICE_NOT_CONNECTED;
   if (status === 401 || status === 403) {
-    return 'The guest-notes service is blocked by this site’s access settings.';
+    return "The guest-notes service is blocked by this site's access settings.";
   }
   if (status === 429) return 'Too many notes were sent at once. Please wait a minute and try again.';
   if (status >= 500) return SERVICE_UNAVAILABLE;
@@ -67,6 +67,13 @@ export const readNotesApiResponse = async <T,>(response: Response, fallback: str
 
   if (!response.ok) {
     const nestedMessage = extractErrorText(data);
+    const isControlledStorageError =
+      response.headers.get('x-guest-notes-error')?.toLowerCase() === 'storage';
+
+    if (isControlledStorageError && nestedMessage) {
+      throw new Error(nestedMessage);
+    }
+
     const message = statusMessage(response.status, nestedMessage || fallback);
     throw new Error(message);
   }

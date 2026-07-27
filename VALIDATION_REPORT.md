@@ -20,7 +20,7 @@ Validation date: July 27, 2026
 - The supplied Le Palace Garden photograph is optimized as WebP and displayed inside the existing curved venue frame without changing its layout or styling.
 - The former gift-style Gentle Note page is replaced by a persistent guest notes wall with named and anonymous posting plus an on-demand “Show all notes” view.
 - Guest notes use one shared validation handler with native adapters for both Vercel and Netlify.
-- Vercel stores notes in a connected Private Vercel Blob store; Netlify stores them in a strongly consistent site-wide Netlify Blobs store.
+- Vercel stores notes in a connected Vercel Blob store with automatic Private/Public access detection; Netlify stores them in a strongly consistent site-wide Netlify Blobs store.
 - The removed dress-code component has a migration-safe empty replacement and is excluded from TypeScript compilation so older extracted folders cannot retain the obsolete implementation.
 - Reservation, guest-count, meal, dietary, and Netlify form features are removed. Migration-safe empty replacements overwrite the obsolete RSVP implementation in older extracted folders.
 
@@ -34,7 +34,7 @@ The environment’s npm CLI was supplied through a temporary runner; the command
 | `npm run check:dev` | Passed — local site and guest notes API completed a real write/read cycle |
 | `npm run typecheck` | Passed — strict TypeScript project build, no errors |
 | `npm run lint` | Passed — ESLint completed with zero errors and zero warnings |
-| `npm run test` | Passed — 7 test files, 21 tests |
+| `npm run test` | Passed — 7 test files, 24 tests |
 | `npm run build` | Passed — production `dist/` created |
 | `npm run test:e2e` | Passed — 8 Playwright projects |
 
@@ -47,7 +47,7 @@ The environment’s npm CLI was supplied through a temporary runner; the command
 - Nested Netlify error objects never render as `[object Object]`
 - Static HTML fallbacks are detected with clear redeployment guidance
 - Guest note API validation, spam blocking, chronological sorting, persistence calls, and rate-limit configuration
-- Vercel Blob private writes, consistent reads, pagination, chronological sorting, and missing-storage guidance
+- Vercel Blob Private/Public access detection, writes, reads, pagination, chronological sorting, and actionable storage guidance
 - Accessible music play/pause toggle
 - Central configuration loading
 - Configurable guest notes section
@@ -92,7 +92,7 @@ Passed against the local Netlify-compatible runtime in a real browser:
 ## Vercel verification
 
 - `api/notes.ts` is a native Vercel Function using the Web Request/Response API.
-- Private Vercel Blob writes use immutable timestamp-and-ID paths.
+- Vercel Blob writes use immutable timestamp-and-ID paths and automatically match the connected store's access mode.
 - Reads paginate through the complete notes folder and use cache bypassing for current private-blob content.
 - Blob reads are batched to limit simultaneous connections.
 - A missing `BLOB_READ_WRITE_TOKEN` returns clear Vercel storage setup guidance.

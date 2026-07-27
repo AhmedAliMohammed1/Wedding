@@ -6,9 +6,17 @@ const blobMocks = vi.hoisted(() => ({
   put: vi.fn()
 }));
 
-vi.mock('@vercel/blob', () => blobMocks);
+vi.mock('@vercel/blob', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@vercel/blob')>();
+  return {
+    ...actual,
+    ...blobMocks
+  };
+});
 
-import notesHandler from '../api/notes';
+import { BlobAccessError, BlobStoreNotFoundError } from '@vercel/blob';
+import notesHandler, { createVercelGuestNotesStore } from '../api/notes';
+import type { GuestNote } from '../src/types/guestNote';
 
 const blobResult = (note: unknown) => ({
   statusCode: 200,
@@ -60,6 +68,24 @@ describe('Vercel guest notes API', () => {
       access: 'private',
       contentType: 'application/json'
     });
+  });
+
+  it('automatically retries with public access when the connected store is public', async () => {
+    const store = createVercelGuestNotesStore();
+    const note: GuestNote = {
+      id: 'public-store-note',
+      author: 'Anonymous',
+      anonymous: true,
+      message: 'A note stored in the connected public Blob store.',
+      createdAt: '2026-07-27T12:00:00.000Z'
+    };
+    blobMocks.put.mockRejectedValueOnce(new BlobAccessError()).mockResolvedValueOnce({});
+
+    await store.write(note);
+
+    expect(blobMocks.put).toHaveBeenCalledTimes(2);
+    expect(blobMocks.put.mock.calls[0]?.[2]).toMatchObject({ access: 'private' });
+    expect(blobMocks.put.mock.calls[1]?.[2]).toMatchObject({ access: 'public' });
   });
 
   it('reads all stored note pages and returns notes newest first', async () => {
@@ -118,8 +144,18 @@ describe('Vercel guest notes API', () => {
     const data = (await response.json()) as { error: string };
 
     expect(response.status).toBe(424);
-    expect(data.error).toMatch(/create a Private Blob store/i);
+    expect(data.error).toMatch(/create a Blob store/i);
     expect(blobMocks.list).not.toHaveBeenCalled();
   });
-});
 
+  it('returns an actionable controlled error when the connected store no longer exists', async () => {
+    blobMocks.list.mockRejectedValueOnce(new BlobStoreNotFoundError());
+
+    const response = await notesHandler.fetch(new Request('https://wedding.example/api/notes'));
+    const data = (await response.json()) as { error: string };
+
+    expect(response.status).toBe(503);
+    expect(response.headers.get('X-Guest-Notes-Error')).toBe('storage');
+    expect(data.error).toMatch(/create or reconnect a Blob store/i);
+  });
+});

@@ -1,15 +1,32 @@
-import { get, list, put } from '@vercel/blob';
-import { handleGuestNotesRequest, type GuestNotesStore } from '../server/guestNotes';
+import {
+  BlobAccessError,
+  BlobNotFoundError,
+  BlobServiceNotAvailable,
+  BlobServiceRateLimited,
+  BlobStoreNotFoundError,
+  BlobStoreSuspendedError,
+  get,
+  list,
+  put,
+  type BlobAccessType,
+  type ListBlobResultBlob
+} from '@vercel/blob';
+import {
+  GuestNotesStorageError,
+  handleGuestNotesRequest,
+  type GuestNotesStore
+} from '../server/guestNotes';
 import type { GuestNote } from '../src/types/guestNote';
 
 const NOTES_PREFIX = 'wedding-guest-notes/notes/';
 const READ_BATCH_SIZE = 20;
+const BLOB_ACCESS_MODES: BlobAccessType[] = ['private', 'public'];
 
 const storageNotConfigured = () =>
   Response.json(
     {
       error:
-        'Guest notes need a Vercel Blob store. In Vercel, open Storage, create a Private Blob store, connect it to this project, and redeploy.'
+        'Guest notes need a Vercel Blob store. In Vercel, open Storage, create a Blob store, connect it to this project, and redeploy.'
     },
     {
       status: 424,
@@ -20,62 +37,150 @@ const storageNotConfigured = () =>
     }
   );
 
-const listAllNoteBlobs = async () => {
-  const blobs = [];
-  let cursor: string | undefined;
-  let hasMore = true;
+const storageErrorFor = (error: unknown) => {
+  if (error instanceof GuestNotesStorageError) return error;
 
-  while (hasMore) {
-    const page = await list({
-      prefix: NOTES_PREFIX,
-      limit: 1_000,
-      cursor
-    });
-    blobs.push(...page.blobs);
-    cursor = page.cursor;
-    hasMore = page.hasMore;
+  if (error instanceof BlobAccessError) {
+    return new GuestNotesStorageError(
+      'Vercel cannot access the connected Blob store. Reconnect the Blob store to this project, confirm BLOB_READ_WRITE_TOKEN is enabled for Production, and redeploy.'
+    );
   }
 
-  return blobs;
-};
-
-const readBlobJson = async (pathname: string): Promise<unknown> => {
-  const result = await get(pathname, {
-    access: 'private',
-    useCache: false
-  });
-
-  if (result?.statusCode !== 200 || !result.stream) return null;
-
-  try {
-    return await new Response(result.stream).json();
-  } catch {
-    return null;
+  if (error instanceof BlobStoreNotFoundError) {
+    return new GuestNotesStorageError(
+      'The connected Vercel Blob store no longer exists. Create or reconnect a Blob store in the Vercel project, then redeploy.'
+    );
   }
+
+  if (error instanceof BlobStoreSuspendedError) {
+    return new GuestNotesStorageError(
+      'The connected Vercel Blob store is suspended. Restore it in Vercel Storage or connect another Blob store, then redeploy.'
+    );
+  }
+
+  if (error instanceof BlobServiceRateLimited) {
+    return new GuestNotesStorageError(
+      'Vercel Blob is receiving too many requests. Please wait a minute and try the note again.',
+      429
+    );
+  }
+
+  if (error instanceof BlobServiceNotAvailable) {
+    return new GuestNotesStorageError(
+      'Vercel Blob is temporarily unavailable. Please wait a moment and try the note again.'
+    );
+  }
+
+  return new GuestNotesStorageError(
+    'Vercel Blob could not load or save the notes. Reconnect the Blob store to this project and redeploy; if it continues, check the /api/notes Function log in Vercel.'
+  );
 };
 
-export const vercelGuestNotesStore: GuestNotesStore = {
-  async readAll() {
-    const blobs = await listAllNoteBlobs();
-    const notes: unknown[] = [];
+export const createVercelGuestNotesStore = (): GuestNotesStore => {
+  let preferredAccess: BlobAccessType = 'private';
 
-    for (let index = 0; index < blobs.length; index += READ_BATCH_SIZE) {
-      const batch = blobs.slice(index, index + READ_BATCH_SIZE);
-      notes.push(...(await Promise.all(batch.map((blob) => readBlobJson(blob.pathname)))));
+  const withDetectedAccess = async <Result>(
+    operation: (access: BlobAccessType) => Promise<Result>
+  ): Promise<Result> => {
+    const accessModes =
+      preferredAccess === 'private' ? BLOB_ACCESS_MODES : [...BLOB_ACCESS_MODES].reverse();
+    let lastAccessError: unknown;
+
+    for (const access of accessModes) {
+      try {
+        const result = await operation(access);
+        preferredAccess = access;
+        return result;
+      } catch (error) {
+        if (error instanceof BlobAccessError) {
+          lastAccessError = error;
+          continue;
+        }
+
+        throw error;
+      }
     }
 
-    return notes;
-  },
+    throw lastAccessError;
+  };
 
-  async write(note: GuestNote) {
-    const timestamp = Date.parse(note.createdAt).toString().padStart(13, '0');
-    await put(`${NOTES_PREFIX}${timestamp}-${note.id}.json`, JSON.stringify(note), {
-      access: 'private',
-      contentType: 'application/json',
-      cacheControlMaxAge: 60
-    });
-  }
+  const listAllNoteBlobs = async () => {
+    const blobs: ListBlobResultBlob[] = [];
+    let cursor: string | undefined;
+    let hasMore = true;
+
+    try {
+      while (hasMore) {
+        const page = await list({
+          prefix: NOTES_PREFIX,
+          limit: 1_000,
+          cursor
+        });
+        blobs.push(...page.blobs);
+        cursor = page.cursor;
+        hasMore = page.hasMore;
+      }
+    } catch (error) {
+      throw storageErrorFor(error);
+    }
+
+    return blobs;
+  };
+
+  const readBlobJson = async (pathname: string): Promise<unknown> => {
+    try {
+      const result = await withDetectedAccess((access) =>
+        get(pathname, {
+          access,
+          useCache: false
+        })
+      );
+
+      if (result?.statusCode !== 200 || !result.stream) return null;
+
+      try {
+        return await new Response(result.stream).json();
+      } catch {
+        return null;
+      }
+    } catch (error) {
+      if (error instanceof BlobNotFoundError) return null;
+      throw storageErrorFor(error);
+    }
+  };
+
+  return {
+    async readAll() {
+      const blobs = await listAllNoteBlobs();
+      const notes: unknown[] = [];
+
+      for (let index = 0; index < blobs.length; index += READ_BATCH_SIZE) {
+        const batch = blobs.slice(index, index + READ_BATCH_SIZE);
+        notes.push(...(await Promise.all(batch.map((blob) => readBlobJson(blob.pathname)))));
+      }
+
+      return notes;
+    },
+
+    async write(note: GuestNote) {
+      const timestamp = Date.parse(note.createdAt).toString().padStart(13, '0');
+
+      try {
+        await withDetectedAccess((access) =>
+          put(`${NOTES_PREFIX}${timestamp}-${note.id}.json`, JSON.stringify(note), {
+            access,
+            contentType: 'application/json',
+            cacheControlMaxAge: 60
+          })
+        );
+      } catch (error) {
+        throw storageErrorFor(error);
+      }
+    }
+  };
 };
+
+export const vercelGuestNotesStore = createVercelGuestNotesStore();
 
 const handler = {
   fetch(request: Request) {
