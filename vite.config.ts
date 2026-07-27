@@ -1,5 +1,6 @@
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
+import netlify from '@netlify/vite-plugin';
 import { invitation } from './src/config/invitation';
 
 const escapeHtml = (value: string) =>
@@ -50,7 +51,7 @@ function invitationSeo(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), invitationSeo()],
+  plugins: [netlify(), react(), invitationSeo()],
   build: {
     target: 'es2022',
     cssCodeSplit: true,

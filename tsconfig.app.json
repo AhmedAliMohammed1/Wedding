@@ -5,6 +5,7 @@
     "useDefineForClassFields": true,
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "allowJs": false,
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -24,6 +25,7 @@
   "include": ["src", "tests", "vite.config.ts"],
   "exclude": [
     "src/components/sections/DressCodeSection.tsx",
+    "src/components/sections/GiftSection.tsx",
     "src/components/forms/RSVPForm.tsx",
     "src/lib/rsvpSchema.ts"
   ]

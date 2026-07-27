@@ -11,7 +11,7 @@ import { CoupleStory } from './components/sections/CoupleStory';
 import { EventTimeline } from './components/sections/EventTimeline';
 import { PhotoGallery } from './components/gallery/PhotoGallery';
 import { VenueSection } from './components/sections/VenueSection';
-import { GiftSection } from './components/sections/GiftSection';
+import { GuestNotesSection } from './components/sections/GuestNotesSection';
 import { ClosingSection } from './components/sections/ClosingSection';
 import { Footer } from './components/sections/Footer';
 import { useGsapScroll } from './hooks/useGsapScroll';
@@ -88,7 +88,13 @@ export function App() {
         <CoupleStory invitation={invitation} />
         <EventTimeline invitation={invitation} />
         <PhotoGallery gallery={invitation.gallery} />
-        <GiftSection gift={invitation.gift} />
+        {invitation.guestNotes.enabled ? (
+          <GuestNotesSection
+            coupleNames={`${invitation.brideName} & ${invitation.groomName}`}
+            title={invitation.guestNotes.title}
+            description={invitation.guestNotes.description}
+          />
+        ) : null}
         <ClosingSection invitation={invitation} />
         <Footer invitation={invitation} />
       </main>

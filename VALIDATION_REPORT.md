@@ -1,6 +1,6 @@
 # Validation Report
 
-Validation date: July 26, 2026
+Validation date: July 27, 2026
 
 ## Environment
 
@@ -18,6 +18,8 @@ Validation date: July 26, 2026
 - Timezone: `Africa/Cairo`
 - The supplied Google Maps embed URL is wired into the venue section.
 - The supplied Le Palace Garden photograph is optimized as WebP and displayed inside the existing curved venue frame without changing its layout or styling.
+- The former gift-style Gentle Note page is replaced by a persistent guest notes wall with named and anonymous posting plus an on-demand “Show all notes” view.
+- Guest notes are validated by a rate-limited Netlify Function and stored in a strongly consistent, site-wide Netlify Blobs store.
 - The removed dress-code component has a migration-safe empty replacement and is excluded from TypeScript compilation so older extracted folders cannot retain the obsolete implementation.
 - Reservation, guest-count, meal, dietary, and Netlify form features are removed. Migration-safe empty replacements overwrite the obsolete RSVP implementation in older extracted folders.
 
@@ -28,10 +30,10 @@ The environment’s npm CLI was supplied through a temporary runner; the command
 | Command | Result |
 | --- | --- |
 | `npm install` | Passed — lockfile version 3, dependencies up to date |
-| `npm run check:dev` | Passed — Vite development server responded at `http://127.0.0.1:5173/` and shut down cleanly |
+| `npm run check:dev` | Passed — local site and guest notes API completed a real write/read cycle |
 | `npm run typecheck` | Passed — strict TypeScript project build, no errors |
 | `npm run lint` | Passed — ESLint completed with zero errors and zero warnings |
-| `npm run test` | Passed — 4 test files, 8 tests |
+| `npm run test` | Passed — 6 test files, 16 tests |
 | `npm run build` | Passed — production `dist/` created |
 | `npm run test:e2e` | Passed — 8 Playwright projects |
 
@@ -39,9 +41,12 @@ The environment’s npm CLI was supplied through a temporary runner; the command
 
 - Countdown formatting, invalid date, and post-event state
 - Absence of RSVP configuration, reservation forms, and meal fields
+- Named and anonymous guest note submissions
+- On-demand loading and display of previous notes
+- Guest note API validation, spam blocking, chronological sorting, persistence calls, and rate-limit configuration
 - Accessible music play/pause toggle
 - Central configuration loading
-- Disabled optional gift section
+- Configurable guest notes section
 - Tap-to-open entrance action
 
 ## Production browser smoke test
@@ -57,13 +62,15 @@ Passed in installed Chromium-family browsers at:
 - 1440 × 900
 - 1920 × 1080
 
-The test verified page load, entrance opening, scroll unlock, the venue as the third section, removal of the dress-code and reservation sections, absence of forms and meal fields, countdown visibility, gallery navigation, venue/map markup, absence of unexpected console errors, and no horizontal overflow.
+The test verified page load, entrance opening, scroll unlock, the venue as the third section, removal of the dress-code and reservation sections, absence of meal fields, countdown visibility, gallery navigation, venue/map markup, the guest note form, on-demand display of stored notes, absence of unexpected console errors, and no horizontal overflow.
 
 ## Netlify verification
 
 - `dist/index.html` exists at the deployment root.
 - No reservation or Netlify form markup is present.
-- SPA redirect and publish directory are configured in `netlify.toml`.
+- The `/api/notes` Netlify Function is configured with per-IP rate limiting.
+- Netlify Blobs stores notes across deployments without client-side credentials.
+- SPA redirect, publish directory, and functions directory are configured in `netlify.toml`.
 - Event JSON-LD, canonical metadata, Open Graph metadata, manifest, robots, and sitemap files are present.
 
 ## Asset and security checks
@@ -72,6 +79,8 @@ The test verified page load, entrance opening, scroll unlock, the venue as the t
 - Hero and gallery images have explicit dimensions.
 - Gallery images use WebP placeholders.
 - No private keys, access tokens, passwords, or environment files are included.
+- Anonymous submissions discard the supplied name before storage.
+- Note content is length-limited and rendered as escaped React text.
 - `node_modules`, test artifacts, caches, and source maps are excluded from the source ZIP.
 
 ## Known limitations
@@ -80,6 +89,7 @@ The test verified page load, entrance opening, scroll unlock, the venue as the t
 - The selected background music is stored locally from the supplied reference page; permission or licensing should be confirmed before public distribution.
 - The canonical deployment URL, sitemap URL, robots sitemap URL, and placeholder phone must be updated before public launch.
 - Google Maps requires an internet connection.
+- Guest notes appear immediately after submission. There is no couple-only moderation dashboard; notes can be reviewed or removed from the project’s Netlify Blobs page.
 - Lighthouse score targets were considered through local assets, lazy loading, code splitting, and reduced font subsets, but no hosted Lighthouse run was recorded because final network and CDN conditions are deployment-specific.
 
 ## Final paths

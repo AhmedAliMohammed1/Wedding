@@ -41,13 +41,10 @@ export interface InvitationConfig {
     image: string;
   };
   schedule: ScheduleItem[];
-  gift: {
+  guestNotes: {
     enabled: boolean;
     title: string;
-    message: string;
-    preference: string;
-    buttonLabel?: string;
-    buttonUrl?: string;
+    description: string;
   };
   contact: {
     email: string;

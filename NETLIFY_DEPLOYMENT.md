@@ -1,18 +1,20 @@
 # Netlify Deployment
 
-No database, API key, environment variable, or paid service is required.
+No database credentials, API key, or environment variable is required. Netlify automatically provisions the Blobs store used by the shared notes wall.
 
-## Method 1: drag and drop
+## Method 1: Netlify project ZIP
 
 Use `wedding-invitation-sacred-garden-netlify.zip`, supplied next to the project folder.
 
 1. Sign in at [Netlify](https://app.netlify.com/).
-2. Open **Sites** or **Deploys** and choose the manual drag-and-drop option.
+2. Open [Netlify Drop](https://app.netlify.com/drop) or the manual deployment area for your existing project.
 3. Drag `wedding-invitation-sacred-garden-netlify.zip` into the upload area.
-4. Wait for the production deployment to finish.
-5. Open the generated Netlify URL and inspect the invitation on both mobile and desktop.
+4. Let Netlify detect the Vite project and run the configured build.
+5. Wait for both the site and the `notes` function to finish deploying.
+6. Open the generated URL and submit one named and one anonymous test note.
+7. Choose **Show all notes** and confirm both notes appear.
 
-The ZIP contains `index.html` at its root. Do not upload the source ZIP for drag-and-drop deployment.
+The Netlify ZIP contains the buildable project at its root, including `package.json`, `netlify.toml`, and `netlify/functions/notes.mts`. Do not upload only `dist`; a static-only deployment cannot publish the notes API.
 
 ## Method 2: Git deployment
 
@@ -25,7 +27,17 @@ The ZIP contains `index.html` at its root. Do not upload the source ZIP for drag
    - Node version: `22`
 5. Deploy the site.
 
-No environment variables are required. The same settings are already defined in `netlify.toml`.
+No environment variables are required. The build, publish, and functions directories are already defined in `netlify.toml`.
+
+## Guest notes storage
+
+The notes endpoint is `/api/notes`. Netlify automatically creates the site-wide `wedding-guest-notes` Blobs store after the first accepted note.
+
+- Notes remain available through later deployments.
+- Anonymous posts are stored without the visitor’s name.
+- Messages are limited to 500 characters.
+- A spam trap and per-IP rate limit protect the endpoint.
+- Stored notes can be inspected from the project’s **Blobs** page in Netlify.
 
 ## Custom domain and HTTPS
 
@@ -43,5 +55,7 @@ No environment variables are required. The same settings are already defined in 
 - Gallery swipes and keyboard arrows work.
 - Map loads and directions open in a new tab.
 - No reservation, guest-count, or meal form is present.
+- Named and anonymous notes can be submitted.
+- **Show all notes** reveals notes posted from another browser or device.
 - Social preview shows the final names, date, and image.
 - The site works on iOS Safari and Android Chrome.

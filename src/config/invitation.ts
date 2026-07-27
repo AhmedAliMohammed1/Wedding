@@ -61,14 +61,11 @@ export const invitation: InvitationConfig = {
       icon: 'celebration'
     }
   ],
-  gift: {
+  guestNotes: {
     enabled: true,
-    title: 'With love, not obligation',
-    message:
-      'Your company is the most meaningful gift. If you would still like to mark the occasion, a contribution toward our first journey as newlyweds would be received with gratitude.',
-    preference: 'A private honeymoon fund will be shared directly with invited guests.',
-    buttonLabel: 'Ask the couple',
-    buttonUrl: 'mailto:ahmedelsaify213@gmail.com'
+    title: 'Leave a little love',
+    description:
+      'Share a wish, a dua, or a favourite memory. Your note will be visible here, but your name is always your choice.'
   },
   contact: {
     email: 'ahmedelsaify213@gmail.com',

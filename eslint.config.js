@@ -13,6 +13,7 @@ export default tseslint.config(
       'test-results',
       'coverage',
       'src/components/sections/DressCodeSection.tsx',
+      'src/components/sections/GiftSection.tsx',
       'src/components/forms/RSVPForm.tsx',
       'src/lib/rsvpSchema.ts'
     ]

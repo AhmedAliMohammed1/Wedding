@@ -1464,64 +1464,365 @@ a {
   text-align: center;
 }
 
-.gift-section {
+.notes-section {
   position: relative;
   overflow: hidden;
   background:
-    linear-gradient(rgba(40, 53, 46, 0.93), rgba(40, 53, 46, 0.93)),
+    linear-gradient(rgba(40, 53, 46, 0.94), rgba(40, 53, 46, 0.96)),
     url("/assets/images/gallery-06.webp") center / cover;
   color: var(--cream);
 }
 
-.gift-section .botanical-corner {
+.notes-section .botanical-corner {
   color: var(--champagne);
 }
 
-.gift-content {
-  display: flex;
-  width: min(100%, 43rem);
-  align-items: center;
-  flex-direction: column;
+.notes-section .section-heading {
+  margin-bottom: clamp(2.5rem, 7vw, 4.5rem);
+}
+
+.notes-section .section-heading .section-intro {
+  color: rgba(247, 242, 232, 0.78);
+}
+
+.note-compose-card {
+  position: relative;
+  width: min(100%, 52rem);
   margin-inline: auto;
+  padding: clamp(1.4rem, 5vw, 3.2rem);
+  overflow: hidden;
+  border: 1px solid rgba(255, 253, 248, 0.62);
+  border-radius: clamp(1.5rem, 4vw, 2.5rem);
+  background: rgba(247, 242, 232, 0.97);
+  box-shadow: 0 30px 90px rgba(17, 24, 18, 0.34);
+  color: var(--ink);
+}
+
+.note-heart {
+  position: absolute;
+  top: clamp(1.3rem, 4vw, 2.4rem);
+  right: clamp(1.3rem, 4vw, 2.4rem);
+  display: grid;
+  width: 3.2rem;
+  height: 3.2rem;
+  place-items: center;
+  border: 1px solid rgba(63, 74, 60, 0.22);
+  border-radius: 50%;
+  color: var(--rose);
+}
+
+.note-heart svg {
+  width: 1.25rem;
+  fill: rgba(201, 169, 166, 0.18);
+  stroke-width: 1.4;
+}
+
+.note-compose-heading {
+  max-width: 34rem;
+  padding-right: 3.4rem;
+}
+
+.note-compose-heading .eyebrow {
+  margin-bottom: 0.55rem;
+  color: var(--sage);
+}
+
+.note-compose-heading h3 {
+  margin: 0;
+  color: var(--olive-dark);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+
+.note-compose-heading > p:last-child {
+  margin: 0.9rem 0 0;
+  color: #5b6056;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+  line-height: 1.5;
+}
+
+.guest-note-form {
+  display: grid;
+  gap: 1.45rem;
+  margin-top: 2.2rem;
+}
+
+.note-identity {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.note-identity legend,
+.note-input-field > span {
+  display: block;
+  margin-bottom: 0.65rem;
+  color: var(--olive-dark);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.note-identity-options {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+
+.note-identity-options label {
+  display: flex;
+  min-height: 5.4rem;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 1rem;
+  border: 1px solid rgba(63, 74, 60, 0.18);
+  border-radius: 1rem;
+  background: rgba(255, 253, 248, 0.72);
+  cursor: pointer;
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.note-identity-options label:has(input:checked) {
+  border-color: var(--sage);
+  background: var(--white);
+  box-shadow: 0 10px 28px rgba(63, 74, 60, 0.1);
+}
+
+.note-identity-options input {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex: none;
+  margin: 0.17rem 0 0;
+  accent-color: var(--olive);
+}
+
+.note-identity-options span {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.note-identity-options strong {
+  color: var(--olive-dark);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.note-identity-options small {
+  color: #62675e;
+  font-size: 0.67rem;
+  line-height: 1.55;
+}
+
+.note-input-field {
+  display: block;
+}
+
+.note-input-field input,
+.note-input-field textarea {
+  width: 100%;
+  border: 1px solid rgba(63, 74, 60, 0.24);
+  border-radius: 0.9rem;
+  background: rgba(255, 253, 248, 0.82);
+  color: var(--ink);
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+}
+
+.note-input-field input {
+  min-height: 3.25rem;
+  padding: 0.72rem 0.9rem;
+}
+
+.note-input-field textarea {
+  min-height: 9rem;
+  padding: 0.85rem 0.9rem;
+  line-height: 1.65;
+  resize: vertical;
+}
+
+.note-input-field input::placeholder,
+.note-input-field textarea::placeholder {
+  color: #7a7e75;
+}
+
+.note-input-field input:focus,
+.note-input-field textarea:focus {
+  border-color: var(--sage);
+  outline: none;
+  background: var(--white);
+  box-shadow: 0 0 0 4px rgba(125, 139, 116, 0.14);
+}
+
+.note-honeypot {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.note-submit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.note-submit-row .button {
+  min-width: 10.5rem;
+}
+
+.note-submit-row .button svg {
+  width: 1rem;
+  height: 1rem;
+  stroke-width: 1.7;
+}
+
+.note-submit-row .button:disabled {
+  transform: none;
+  opacity: 0.64;
+}
+
+.note-character-count {
+  color: #74786f;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+}
+
+.note-form-feedback {
+  min-height: 1.8rem;
+}
+
+.note-form-feedback p {
+  margin: 0;
+  font-size: 0.74rem;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+.note-error {
+  color: #8e3d38;
+}
+
+.note-success {
+  color: #3d6949;
+}
+
+.note-spinner {
+  animation: note-spin 900ms linear infinite;
+}
+
+@keyframes note-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.notes-disclosure {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.notes-disclosure .button svg {
+  width: 1rem;
+  height: 1rem;
+  stroke-width: 1.6;
+}
+
+.notes-wall {
+  width: min(100%, 68rem);
+  margin: 2.4rem auto 0;
+}
+
+.notes-wall-state {
+  display: flex;
+  min-height: 8rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 0;
+  color: rgba(247, 242, 232, 0.82);
   text-align: center;
 }
 
-.gift-icon {
-  position: relative;
+div.notes-wall-state {
+  flex-direction: column;
+}
+
+.notes-wall-state .note-spinner {
+  width: 1.1rem;
+}
+
+.guest-notes-list {
   display: grid;
-  width: 5rem;
-  height: 5rem;
-  place-items: center;
-  margin-bottom: 1.8rem;
-  border: 1px solid rgba(247, 242, 232, 0.35);
-  border-radius: 50%;
-}
-
-.gift-icon svg {
-  width: 1.6rem;
-  stroke-width: 1.2;
-}
-
-.gift-icon svg:last-child {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.65rem;
-  width: 0.9rem;
-  color: var(--champagne);
-}
-
-.gift-content > p {
   margin: 0;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: clamp(1.25rem, 3vw, 1.55rem);
-  line-height: 1.6;
+  padding: 0;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  list-style: none;
 }
 
-.gift-content > small {
-  margin: 1rem 0 1.8rem;
-  color: rgba(247, 242, 232, 0.68);
+.guest-note-card {
+  position: relative;
+  display: flex;
+  height: 100%;
+  min-height: 13rem;
+  flex-direction: column;
+  padding: 1.5rem;
+  border: 1px solid rgba(247, 242, 232, 0.18);
+  border-radius: 1.35rem;
+  background: rgba(247, 242, 232, 0.1);
+  box-shadow: 0 18px 48px rgba(16, 23, 17, 0.16);
+  backdrop-filter: blur(10px);
+}
+
+.guest-note-card > svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--champagne);
+  fill: rgba(214, 194, 166, 0.13);
+  stroke-width: 1.5;
+}
+
+.guest-note-card blockquote {
+  flex: 1;
+  margin: 1rem 0 1.5rem;
+  color: var(--cream);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: clamp(1.15rem, 2.5vw, 1.35rem);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.guest-note-card footer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(247, 242, 232, 0.13);
+}
+
+.guest-note-card strong {
+  color: var(--champagne);
   font-size: 0.68rem;
+  font-weight: 600;
   letter-spacing: 0.08em;
+}
+
+.guest-note-card time {
+  color: rgba(247, 242, 232, 0.52);
+  font-size: 0.58rem;
 }
 
 .closing-section {
@@ -1835,6 +2136,35 @@ a {
 
   .closing-ornament {
     padding-inline: 1rem;
+  }
+
+  .note-compose-card {
+    padding: 1.25rem;
+    border-radius: 1.35rem;
+  }
+
+  .note-heart {
+    top: 1.15rem;
+    right: 1.15rem;
+    width: 2.7rem;
+    height: 2.7rem;
+  }
+
+  .note-compose-heading {
+    padding-right: 2.7rem;
+  }
+
+  .note-submit-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .note-submit-row .button {
+    width: 100%;
+  }
+
+  .note-character-count {
+    align-self: flex-end;
   }
 }
 

@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { GiftSection } from '../src/components/sections/GiftSection';
 import { InvitationEntrance } from '../src/components/common/InvitationEntrance';
 import { invitation } from '../src/config/invitation';
 
@@ -16,9 +15,9 @@ describe('invitation configuration and optional sections', () => {
     expect(invitation.gallery.every((image) => image.src.startsWith('/assets/images/'))).toBe(true);
   });
 
-  it('does not render the optional gift section when disabled', () => {
-    const { container } = render(<GiftSection gift={{ ...invitation.gift, enabled: false }} />);
-    expect(container).toBeEmptyDOMElement();
+  it('enables the shared guest notes wall', () => {
+    expect(invitation.guestNotes.enabled).toBe(true);
+    expect(invitation.guestNotes.title).toBe('Leave a little love');
   });
 
   it('opens the entrance from a clear user action', async () => {

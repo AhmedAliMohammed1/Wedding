@@ -54,9 +54,14 @@ Core colours are CSS variables at the top of `src/styles/global.css` and are mir
 
 The three local font families are Cormorant Garamond, Great Vibes, and Montserrat. Font imports are in `src/main.tsx`. To change a font, install the new `@fontsource` package, update those imports, then update the matching `font-family` rules.
 
-## Gift section
+## Guest notes
 
-Set `gift.enabled` to `false` to remove the entire section. When enabled, edit the title, message, preference, button label, and URL. Do not publish private bank details unless the couple has explicitly chosen to do so.
+In the `guestNotes` block:
+
+- Set `enabled` to `false` to remove the entire section.
+- Change `title` and `description` to customize the invitation text above the form.
+
+The labels and helper text for the form are in `src/components/sections/GuestNotesSection.tsx`. Every note is public after submission, while the sender chooses whether their name appears. Persistent storage and validation are handled by `netlify/functions/notes.mts`.
 
 ## Social preview and deployment URL
 
@@ -69,7 +74,7 @@ Run a fresh production build after any social or event data change. Vite generat
 
 ## Optional sections
 
-The gift section can be disabled in configuration. To hide another section, remove its component line from `src/App.tsx`; do not delete its source file if you may restore it later.
+The guest notes section can be disabled in configuration. To hide another section, remove its component line from `src/App.tsx`; do not delete its source file if you may restore it later.
 
 ## Final check
 
@@ -83,4 +88,4 @@ npm run build
 npm run preview
 ```
 
-Open the invitation on a phone and desktop, then test the music, gallery, map, directions link, and contact email.
+Open the deployed invitation on a phone and desktop. Test the music, gallery, map, directions link, named note submission, anonymous note submission, “Show all notes,” and the contact email.
