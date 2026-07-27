@@ -117,8 +117,8 @@ export const invitation: InvitationConfig = {
   ],
   images: {
     hero: '/assets/images/hero-garden.webp',
-    storyMain: '/assets/images/story-main.webp',
-    storySecondary: '/assets/images/story-secondary.webp'
+    storyMain: '/assets/images/glimpse-left.webp',
+    storySecondary: '/assets/images/glimpse-right.webp'
   },
   music: {
     src: '/assets/audio/divenire.mp3',

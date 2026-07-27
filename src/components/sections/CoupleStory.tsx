@@ -17,7 +17,7 @@ export function CoupleStory({ invitation }: { invitation: InvitationConfig }) {
           <div className="organic-mask" data-parallax>
             <ImageWithFallback
               src={invitation.images.storyMain}
-              alt="Abstract botanical portrait placeholder for the couple"
+              alt="Illustrated portrait of Ahmed and Nada at their engagement celebration"
               width="1200"
               height="1500"
               loading="lazy"
@@ -28,7 +28,7 @@ export function CoupleStory({ invitation }: { invitation: InvitationConfig }) {
         <figure className="story-secondary" data-reveal>
           <ImageWithFallback
             src={invitation.images.storySecondary}
-            alt="Layered botanical detail placeholder"
+            alt="Illustrated mirror portrait of Ahmed and Nada together"
             width="900"
             height="1100"
             loading="lazy"
