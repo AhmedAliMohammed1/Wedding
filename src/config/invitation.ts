@@ -73,46 +73,39 @@ export const invitation: InvitationConfig = {
   },
   gallery: [
     {
-      src: '/assets/images/gallery-01.webp',
-      alt: 'Soft botanical still life in warm afternoon light',
-      caption: 'Where the garden meets golden hour',
-      width: 1200,
-      height: 1500
+      src: '/assets/images/glimpse-left.webp',
+      alt: 'Illustrated portrait of Ahmed and Nada at their engagement celebration',
+      caption: 'The beginning of our forever',
+      width: 896,
+      height: 1195
     },
     {
-      src: '/assets/images/gallery-02.webp',
-      alt: 'Garden pathway surrounded by layered foliage',
-      caption: 'A path toward something beautiful',
-      width: 1200,
-      height: 1500
+      src: '/assets/images/glimpse-right.webp',
+      alt: 'Illustrated mirror portrait of Ahmed and Nada together',
+      caption: 'Side by side, always',
+      width: 768,
+      height: 1364
     },
     {
-      src: '/assets/images/gallery-03.webp',
-      alt: 'Abstract floral arrangement in rose and cream tones',
-      caption: 'The colours of our celebration',
-      width: 1200,
-      height: 1500
+      src: '/assets/images/captured-03.webp',
+      alt: 'Playful illustrated portrait of Ahmed and Nada in formal attire',
+      caption: 'Love, laughter, and a little mischief',
+      width: 1264,
+      height: 843
     },
     {
-      src: '/assets/images/gallery-04.webp',
-      alt: 'Candlelit table among deep green plants',
-      caption: 'An evening made for stories',
-      width: 1200,
-      height: 1500
+      src: '/assets/images/captured-04.webp',
+      alt: 'Illustrated formal portrait of Ahmed and Nada beneath an arch',
+      caption: 'A moment made entirely ours',
+      width: 1264,
+      height: 843
     },
     {
-      src: '/assets/images/gallery-05.webp',
-      alt: 'Cream flowers framed by sage leaves',
-      caption: 'In every detail, a little wonder',
-      width: 1200,
-      height: 1500
-    },
-    {
-      src: '/assets/images/gallery-06.webp',
-      alt: 'Twilight garden beneath a muted evening sky',
-      caption: 'Then we dance beneath the stars',
-      width: 1200,
-      height: 1500
+      src: '/assets/images/captured-05.webp',
+      alt: 'Illustrated wedding portrait of Ahmed and Nada holding hands',
+      caption: 'Hand in hand toward forever',
+      width: 843,
+      height: 1264
     }
   ],
   images: {
