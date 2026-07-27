@@ -1,5 +1,5 @@
 const SERVICE_NOT_CONNECTED =
-  'The guest-notes service is not connected on this deployment. Please redeploy the complete Netlify project, not only the dist folder.';
+  'The guest-notes service is not connected on this deployment. Deploy the complete project with its /api/notes server function.';
 const SERVICE_UNAVAILABLE = 'The guest-notes service is temporarily unavailable. Please try again in a moment.';
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -82,4 +82,3 @@ export const readNotesApiResponse = async <T,>(response: Response, fallback: str
 
   return data as T;
 };
-

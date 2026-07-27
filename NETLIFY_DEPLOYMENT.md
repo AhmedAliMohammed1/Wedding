@@ -18,6 +18,8 @@ The Netlify ZIP contains the buildable project at its root, including `package.j
 
 If the page says that the guest-notes service is not connected, the site was deployed as static files without the Netlify Function. Redeploy the complete Netlify ZIP or use the Git deployment method below.
 
+For a Vercel deployment, use the separate instructions in `VERCEL_DEPLOYMENT.md`; Vercel uses `api/notes.ts` and a Private Vercel Blob store instead of the Netlify Function.
+
 ## Method 2: Git deployment
 
 1. Push the complete source project to GitHub, GitLab, or Bitbucket.

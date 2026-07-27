@@ -76,6 +76,8 @@ Run a fresh production build after any social or event data change. Vite generat
 
 The guest notes section can be disabled in configuration. To hide another section, remove its component line from `src/App.tsx`; do not delete its source file if you may restore it later.
 
+The guest-notes browser endpoint stays `/api/notes` on both supported hosts. Vercel uses `api/notes.ts` with a connected Private Blob store; Netlify uses `netlify/functions/notes.mts`.
+
 ## Final check
 
 Run:

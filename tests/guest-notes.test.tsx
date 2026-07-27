@@ -122,7 +122,7 @@ describe('guest notes section', () => {
     await user.type(screen.getByRole('textbox', { name: /your note/i }), 'A beautiful wish.');
     await user.click(screen.getByRole('button', { name: /send note/i }));
 
-    expect(await screen.findByText(/redeploy the complete Netlify project/i)).toBeInTheDocument();
+    expect(await screen.findByText(/deploy the complete project with its \/api\/notes server function/i)).toBeInTheDocument();
   });
 
   it('loads previous notes only when the visitor asks to see them', async () => {

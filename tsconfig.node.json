@@ -19,6 +19,8 @@
     "playwright.config.ts",
     "tailwind.config.ts",
     "scripts",
-    "netlify/functions"
+    "netlify/functions",
+    "api",
+    "server"
   ]
 }
