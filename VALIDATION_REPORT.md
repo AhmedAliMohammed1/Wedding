@@ -34,7 +34,7 @@ The environment’s npm CLI was supplied through a temporary runner; the command
 | `npm run check:dev` | Passed — local site and guest notes API completed a real write/read cycle |
 | `npm run typecheck` | Passed — strict TypeScript project build, no errors |
 | `npm run lint` | Passed — ESLint completed with zero errors and zero warnings |
-| `npm run test` | Passed — 7 test files, 24 tests |
+| `npm run test` | Passed — 7 test files, 26 tests |
 | `npm run build` | Passed — production `dist/` created |
 | `npm run test:e2e` | Passed — 8 Playwright projects |
 
@@ -48,6 +48,7 @@ The environment’s npm CLI was supplied through a temporary runner; the command
 - Static HTML fallbacks are detected with clear redeployment guidance
 - Guest note API validation, spam blocking, chronological sorting, persistence calls, and rate-limit configuration
 - Vercel Blob Private/Public access detection, writes, reads, pagination, chronological sorting, and actionable storage guidance
+- Node-native note ID generation and traceable Vercel runtime failures
 - Accessible music play/pause toggle
 - Central configuration loading
 - Configurable guest notes section

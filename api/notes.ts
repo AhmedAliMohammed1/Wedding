@@ -12,6 +12,7 @@ import {
   type ListBlobResultBlob
 } from '@vercel/blob';
 import {
+  GUEST_NOTES_API_VERSION,
   GuestNotesStorageError,
   handleGuestNotesRequest,
   type GuestNotesStore
@@ -32,7 +33,8 @@ const storageNotConfigured = () =>
       status: 424,
       headers: {
         'Cache-Control': 'no-store',
-        'X-Content-Type-Options': 'nosniff'
+        'X-Content-Type-Options': 'nosniff',
+        'X-Guest-Notes-Version': GUEST_NOTES_API_VERSION
       }
     }
   );

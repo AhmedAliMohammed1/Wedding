@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const blobMocks = vi.hoisted(() => ({
   get: vi.fn(),
@@ -11,6 +11,7 @@ vi.mock('@netlify/blobs', () => ({
 }));
 
 import notesHandler, { config } from '../netlify/functions/notes.mts';
+import type { GuestNote } from '../src/types/guestNote';
 
 beforeEach(() => {
   blobMocks.get.mockReset();
@@ -18,11 +19,6 @@ beforeEach(() => {
   blobMocks.setJSON.mockReset();
   blobMocks.list.mockResolvedValue({ blobs: [], directories: [] });
   blobMocks.setJSON.mockResolvedValue(undefined);
-  vi.stubGlobal('crypto', { randomUUID: () => 'generated-note-id' });
-});
-
-afterEach(() => {
-  vi.unstubAllGlobals();
 });
 
 describe('guest notes API', () => {
@@ -44,11 +40,12 @@ describe('guest notes API', () => {
     expect(response.status).toBe(201);
     expect(data.note).toMatchObject({ author: 'Anonymous', anonymous: true });
     expect(blobMocks.setJSON).toHaveBeenCalledOnce();
-    expect(blobMocks.setJSON.mock.calls[0]?.[1]).toMatchObject({
-      id: 'generated-note-id',
+    const storedNote = blobMocks.setJSON.mock.calls[0]?.[1] as GuestNote;
+    expect(storedNote).toMatchObject({
       author: 'Anonymous',
       anonymous: true
     });
+    expect(storedNote.id).toMatch(/^[0-9a-f-]{36}$/);
   });
 
   it('rejects invalid or automated submissions before storage', async () => {
@@ -99,6 +96,19 @@ describe('guest notes API', () => {
 
     expect(response.status).toBe(200);
     expect(data.notes.map((note) => note.id)).toEqual(['newer', 'older']);
+  });
+
+  it('returns a traceable runtime error instead of a generic unavailable response', async () => {
+    blobMocks.list.mockRejectedValueOnce(new TypeError('simulated runtime failure'));
+
+    const response = await notesHandler(new Request('https://example.com/api/notes'), {} as never);
+    const data = (await response.json()) as { error: string };
+
+    expect(response.status).toBe(500);
+    expect(response.headers.get('X-Guest-Notes-Error')).toBe('runtime');
+    expect(response.headers.get('X-Guest-Notes-Reference')).toMatch(/^[0-9a-f]{8}$/);
+    expect(response.headers.get('X-Guest-Notes-Version')).toBe('2026-07-27.4');
+    expect(data.error).toMatch(/TypeError.*reference [0-9a-f]{8}/i);
   });
 
   it('publishes the shared API path with per-IP rate limiting', () => {

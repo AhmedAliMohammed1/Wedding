@@ -101,6 +101,7 @@ Current Chrome, Edge, Firefox, Safari, iOS Safari, and Android Chrome are suppor
 - **Map is blank:** Confirm the embed URL uses HTTPS and allows iframe embedding. Directions remain available separately.
 - **Vercel asks for a Blob store:** Create and connect a Blob store in the Vercel project, then redeploy.
 - **Vercel cannot access the connected store:** Reconnect the store, enable `BLOB_READ_WRITE_TOKEN` for Production, and redeploy.
+- **Vercel reports a function error:** Copy the eight-character reference shown on the invitation and find the matching entry in the `/api/notes` Function log.
 - **The notes service is not connected:** Deploy the complete source project so the host receives `/api/notes`; a `dist`-only upload contains no server function.
 - **A note is rejected:** Keep the name between 2 and 60 characters when signing it and the message between 2 and 500 characters.
 - **A replaced image appears cropped:** Use the dimensions and focal-point advice in the asset guide.

@@ -67,10 +67,9 @@ export const readNotesApiResponse = async <T,>(response: Response, fallback: str
 
   if (!response.ok) {
     const nestedMessage = extractErrorText(data);
-    const isControlledStorageError =
-      response.headers.get('x-guest-notes-error')?.toLowerCase() === 'storage';
+    const controlledErrorType = response.headers.get('x-guest-notes-error')?.toLowerCase();
 
-    if (isControlledStorageError && nestedMessage) {
+    if ((controlledErrorType === 'storage' || controlledErrorType === 'runtime') && nestedMessage) {
       throw new Error(nestedMessage);
     }
 

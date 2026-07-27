@@ -1,8 +1,10 @@
+import { randomUUID } from 'node:crypto';
 import { isGuestNote, type GuestNote } from '../src/types/guestNote';
 
 const MAX_NAME_LENGTH = 60;
 const MAX_MESSAGE_LENGTH = 500;
 const MAX_BODY_LENGTH = 4_000;
+export const GUEST_NOTES_API_VERSION = '2026-07-27.4';
 
 export interface GuestNotesStore {
   readAll: () => Promise<unknown[]>;
@@ -25,6 +27,7 @@ const jsonResponse = (data: unknown, status = 200, headers: Record<string, strin
     headers: {
       'Cache-Control': 'no-store',
       'X-Content-Type-Options': 'nosniff',
+      'X-Guest-Notes-Version': GUEST_NOTES_API_VERSION,
       ...headers
     }
   });
@@ -93,7 +96,7 @@ const createNote = async (request: Request, store: GuestNotesStore) => {
   }
 
   const note: GuestNote = {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     author: anonymous ? 'Anonymous' : name,
     anonymous,
     message,
@@ -122,14 +125,28 @@ export const handleGuestNotesRequest = async (request: Request, store: GuestNote
       }
     });
   } catch (error) {
-    console.error('Guest notes request failed', error);
-
     if (error instanceof GuestNotesStorageError) {
+      console.error('Guest notes storage request failed', error);
       return jsonResponse({ error: error.message }, error.status, {
         'X-Guest-Notes-Error': 'storage'
       });
     }
 
-    return jsonResponse({ error: 'The notes are temporarily unavailable. Please try again.' }, 500);
+    const errorReference = randomUUID().slice(0, 8);
+    const errorType = error instanceof Error ? error.name : 'UnknownError';
+    console.error(`Guest notes runtime request failed [${errorReference}]`, error);
+
+    return jsonResponse(
+      {
+        error:
+          `The guest-notes function encountered ${errorType} ` +
+          `(reference ${errorReference}). Check this reference in your /api/notes Function log.`
+      },
+      500,
+      {
+        'X-Guest-Notes-Error': 'runtime',
+        'X-Guest-Notes-Reference': errorReference
+      }
+    );
   }
 };

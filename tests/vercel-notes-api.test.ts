@@ -30,12 +30,10 @@ beforeEach(() => {
   blobMocks.list.mockResolvedValue({ blobs: [], hasMore: false });
   blobMocks.put.mockResolvedValue({});
   vi.stubEnv('BLOB_READ_WRITE_TOKEN', 'vercel-test-token');
-  vi.stubGlobal('crypto', { randomUUID: () => 'vercel-note-id' });
 });
 
 afterEach(() => {
   vi.unstubAllEnvs();
-  vi.unstubAllGlobals();
 });
 
 describe('Vercel guest notes API', () => {
@@ -55,10 +53,11 @@ describe('Vercel guest notes API', () => {
     const data = (await response.json()) as { note: { author: string; id: string } };
 
     expect(response.status).toBe(201);
-    expect(data.note).toMatchObject({ author: 'Salma', id: 'vercel-note-id' });
+    expect(data.note).toMatchObject({ author: 'Salma' });
+    expect(data.note.id).toMatch(/^[0-9a-f-]{36}$/);
     expect(blobMocks.put).toHaveBeenCalledOnce();
     expect(blobMocks.put.mock.calls[0]?.[0]).toMatch(
-      /^wedding-guest-notes\/notes\/\d{13}-vercel-note-id\.json$/
+      new RegExp(`^wedding-guest-notes/notes/\\d{13}-${data.note.id}\\.json$`)
     );
     expect(JSON.parse(blobMocks.put.mock.calls[0]?.[1] as string)).toMatchObject({
       author: 'Salma',
@@ -157,5 +156,17 @@ describe('Vercel guest notes API', () => {
     expect(response.status).toBe(503);
     expect(response.headers.get('X-Guest-Notes-Error')).toBe('storage');
     expect(data.error).toMatch(/create or reconnect a Blob store/i);
+  });
+
+  it('identifies unexpected storage failures instead of returning the generic unavailable error', async () => {
+    blobMocks.list.mockRejectedValueOnce(new TypeError('simulated runtime failure'));
+
+    const response = await notesHandler.fetch(new Request('https://wedding.example/api/notes'));
+    const data = (await response.json()) as { error: string };
+
+    expect(response.status).toBe(503);
+    expect(response.headers.get('X-Guest-Notes-Error')).toBe('storage');
+    expect(response.headers.get('X-Guest-Notes-Version')).toBe('2026-07-27.4');
+    expect(data.error).toMatch(/check the \/api\/notes Function log/i);
   });
 });

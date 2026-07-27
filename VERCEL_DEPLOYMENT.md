@@ -40,6 +40,8 @@ If the page asks for a Vercel Blob store, the function is deployed correctly but
 
 If the page says Vercel cannot access the connected store, reconnect that store to the project, confirm `BLOB_READ_WRITE_TOKEN` is enabled for the **Production** environment, and redeploy. The page now preserves this specific recovery instruction instead of replacing every server error with a generic unavailable message.
 
+Unexpected server failures include an eight-character reference on the invitation and in the `/api/notes` Function log. API responses also include `X-Guest-Notes-Version`, which confirms exactly which server revision handled the request.
+
 ## Existing Vercel project
 
 If the invitation is already deployed:
