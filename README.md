@@ -67,7 +67,7 @@ For Vercel, follow `VERCEL_DEPLOYMENT.md`. For Netlify, follow `NETLIFY_DEPLOYME
 
 ## Vercel deployment
 
-Deploy the complete project and connect a **Vercel Blob** store from the project’s Storage page. Private access is recommended, but an existing Public store also works. Vercel then supplies `BLOB_READ_WRITE_TOKEN` to the server function automatically. Redeploy after connecting the store. See [VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md).
+Deploy the complete project and connect a **Vercel Blob** store from the project’s Storage page. Private access is recommended, but an existing Public store also works. New connections use Vercel OIDC with `BLOB_STORE_ID`; older connections may supply `BLOB_READ_WRITE_TOKEN`. Redeploy after connecting the store. See [VERCEL_DEPLOYMENT.md](VERCEL_DEPLOYMENT.md).
 
 ## Netlify deployment
 
@@ -100,7 +100,7 @@ Current Chrome, Edge, Firefox, Safari, iOS Safari, and Android Chrome are suppor
 - **Music is unavailable:** Confirm the `music.src` file exists and its filename matches the configuration.
 - **Map is blank:** Confirm the embed URL uses HTTPS and allows iframe embedding. Directions remain available separately.
 - **Vercel asks for a Blob store:** Create and connect a Blob store in the Vercel project, then redeploy.
-- **Vercel cannot access the connected store:** Reconnect the store, enable `BLOB_READ_WRITE_TOKEN` for Production, and redeploy.
+- **Vercel cannot access the connected store:** Reconnect the store, enable `BLOB_STORE_ID` for Production (or `BLOB_READ_WRITE_TOKEN` for an older connection), and redeploy.
 - **Vercel reports a function error:** Copy the eight-character reference shown on the invitation and find the matching entry in the `/api/notes` Function log.
 - **The notes service is not connected:** Deploy the complete source project so the host receives `/api/notes`; a `dist`-only upload contains no server function.
 - **A note is rejected:** Keep the name between 2 and 60 characters when signing it and the message between 2 and 500 characters.

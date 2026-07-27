@@ -23,10 +23,10 @@ This is required once for the Vercel project:
 4. Set the Blob store access to **Private** when Vercel offers that choice. An existing Public store is also supported automatically.
 5. Create the store and connect it to this same project.
 6. Enable the store for Production and Preview environments.
-7. Confirm Vercel added `BLOB_READ_WRITE_TOKEN` to the project.
+7. Confirm Vercel connected the store to Production and Preview. New connections use OIDC with `BLOB_STORE_ID`; older connections may use `BLOB_READ_WRITE_TOKEN`.
 8. Redeploy the latest deployment.
 
-Vercel creates and manages the token automatically. Never add it to the frontend, commit it to Git, or paste it into a public file.
+Vercel now uses short-lived OIDC authentication for new Blob connections, so a long-lived read-write token is not required. Never add storage credentials to the frontend, commit them to Git, or paste them into a public file.
 
 ## Verify after redeployment
 
@@ -38,7 +38,7 @@ Vercel creates and manages the token automatically. Never add it to the frontend
 
 If the page asks for a Vercel Blob store, the function is deployed correctly but the store is not yet connected. Complete the storage steps above and redeploy.
 
-If the page says Vercel cannot access the connected store, reconnect that store to the project, confirm `BLOB_READ_WRITE_TOKEN` is enabled for the **Production** environment, and redeploy. The page now preserves this specific recovery instruction instead of replacing every server error with a generic unavailable message.
+If the page says Vercel cannot access the connected store, reconnect that store to the project, confirm `BLOB_STORE_ID` is enabled for the **Production** environment, and redeploy. Older token-based connections should instead confirm `BLOB_READ_WRITE_TOKEN`. The page preserves this specific recovery instruction instead of replacing every server error with a generic unavailable message.
 
 Unexpected server failures include an eight-character reference on the invitation and in the `/api/notes` Function log. API responses also include `X-Guest-Notes-Version`, which confirms exactly which server revision handled the request.
 

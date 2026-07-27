@@ -118,7 +118,7 @@ describe('guest notes section', () => {
 
   it('shows the Vercel storage recovery instruction returned by the API', async () => {
     const recoveryMessage =
-      'Vercel cannot access the connected Blob store. Reconnect the Blob store to this project, confirm BLOB_READ_WRITE_TOKEN is enabled for Production, and redeploy.';
+      'Vercel cannot access the connected Blob store. Reconnect it, confirm BLOB_STORE_ID is enabled for Production (or BLOB_READ_WRITE_TOKEN for an older connection), and redeploy.';
     const fetchMock = vi
       .fn<typeof fetch>()
       .mockResolvedValue(storageErrorResponse(recoveryMessage));

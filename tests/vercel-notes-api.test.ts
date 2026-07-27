@@ -30,6 +30,7 @@ beforeEach(() => {
   blobMocks.list.mockResolvedValue({ blobs: [], hasMore: false });
   blobMocks.put.mockResolvedValue({});
   vi.stubEnv('BLOB_READ_WRITE_TOKEN', 'vercel-test-token');
+  vi.stubEnv('BLOB_STORE_ID', '');
 });
 
 afterEach(() => {
@@ -138,6 +139,7 @@ describe('Vercel guest notes API', () => {
 
   it('returns clear setup guidance when the Blob store is not connected', async () => {
     vi.stubEnv('BLOB_READ_WRITE_TOKEN', '');
+    vi.stubEnv('BLOB_STORE_ID', '');
 
     const response = await GET(new Request('https://wedding.example/api/notes'));
     const data = (await response.json()) as { error: string };
@@ -145,6 +147,19 @@ describe('Vercel guest notes API', () => {
     expect(response.status).toBe(424);
     expect(data.error).toMatch(/create a Blob store/i);
     expect(blobMocks.list).not.toHaveBeenCalled();
+  });
+
+  it('uses a newly connected OIDC Blob store without a legacy read-write token', async () => {
+    vi.stubEnv('BLOB_READ_WRITE_TOKEN', '');
+    vi.stubEnv('BLOB_STORE_ID', 'store_wedding_blob');
+
+    const response = await GET(new Request('https://wedding.example/api/notes'));
+    const data = (await response.json()) as { notes: unknown[] };
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('X-Guest-Notes-Version')).toBe('2026-07-27.6');
+    expect(data.notes).toEqual([]);
+    expect(blobMocks.list).toHaveBeenCalledOnce();
   });
 
   it('returns an actionable controlled error when the connected store no longer exists', async () => {
@@ -166,7 +181,7 @@ describe('Vercel guest notes API', () => {
 
     expect(response.status).toBe(503);
     expect(response.headers.get('X-Guest-Notes-Error')).toBe('storage');
-    expect(response.headers.get('X-Guest-Notes-Version')).toBe('2026-07-27.5');
+    expect(response.headers.get('X-Guest-Notes-Version')).toBe('2026-07-27.6');
     expect(data.error).toMatch(/TypeError.*Reference [0-9a-f]{8}/i);
   });
 });

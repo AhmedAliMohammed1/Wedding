@@ -5,7 +5,7 @@ const READ_BATCH_SIZE = 20;
 const MAX_NAME_LENGTH = 60;
 const MAX_MESSAGE_LENGTH = 500;
 const MAX_BODY_LENGTH = 4_000;
-const API_VERSION = '2026-07-27.5';
+const API_VERSION = '2026-07-27.6';
 const BLOB_ACCESS_MODES = ['private', 'public'] as const;
 let blobClientPromise: Promise<typeof import('@vercel/blob')> | undefined;
 
@@ -59,7 +59,7 @@ const storageErrorFor = (error: unknown) => {
   switch (errorClassName(error)) {
     case 'BlobAccessError':
       return new GuestNotesStorageError(
-        'Vercel cannot access the connected Blob store. Reconnect the Blob store to this project, confirm BLOB_READ_WRITE_TOKEN is enabled for Production, and redeploy.'
+        'Vercel cannot access the connected Blob store. Reconnect it, confirm BLOB_STORE_ID is enabled for Production (or BLOB_READ_WRITE_TOKEN for an older connection), and redeploy.'
       );
     case 'BlobStoreNotFoundError':
       return new GuestNotesStorageError(
@@ -327,7 +327,10 @@ const createNote = async (request: Request) => {
 };
 
 const handleRequest = async (request: Request) => {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) return storageNotConfigured();
+  const hasBlobConnection = Boolean(
+    process.env.BLOB_STORE_ID || process.env.BLOB_READ_WRITE_TOKEN
+  );
+  if (!hasBlobConnection) return storageNotConfigured();
 
   try {
     if (request.method === 'GET') {

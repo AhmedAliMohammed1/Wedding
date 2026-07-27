@@ -34,7 +34,7 @@ The environment’s npm CLI was supplied through a temporary runner; the command
 | `npm run check:dev` | Passed — local site and guest notes API completed a real write/read cycle |
 | `npm run typecheck` | Passed — strict TypeScript project build, no errors |
 | `npm run lint` | Passed — ESLint completed with zero errors and zero warnings |
-| `npm run test` | Passed — 7 test files, 26 tests |
+| `npm run test` | Passed — 7 test files, 27 tests |
 | `npm run build` | Passed — production `dist/` created |
 | `npm run test:e2e` | Passed — 8 Playwright projects |
 
@@ -96,7 +96,7 @@ Passed against the local Netlify-compatible runtime in a real browser:
 - Vercel Blob writes use immutable timestamp-and-ID paths and automatically match the connected store's access mode.
 - Reads paginate through the complete notes folder and use cache bypassing for current private-blob content.
 - Blob reads are batched to limit simultaneous connections.
-- A missing `BLOB_READ_WRITE_TOKEN` returns clear Vercel storage setup guidance.
+- Missing both the OIDC `BLOB_STORE_ID` and legacy `BLOB_READ_WRITE_TOKEN` returns clear Vercel storage setup guidance.
 - `vercel.json` preserves SPA routing while filesystem precedence keeps `/api/notes` on the function.
 - Vercel and Netlify share the same validation, anonymous-name removal, spam trap, response format, and sorting logic.
 
