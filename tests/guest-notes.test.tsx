@@ -91,6 +91,40 @@ describe('guest notes section', () => {
     });
   });
 
+  it('shows a useful deployment message instead of [object Object]', async () => {
+    const fetchMock = vi
+      .fn<typeof fetch>()
+      .mockResolvedValue(jsonResponse({ error: { message: 'Not Found' } }, 404));
+    vi.stubGlobal('fetch', fetchMock);
+    const user = userEvent.setup();
+    render(<GuestNotesSection {...guestNotesProps} />);
+
+    await user.type(screen.getByRole('textbox', { name: /your name/i }), 'Layla');
+    await user.type(screen.getByRole('textbox', { name: /your note/i }), 'A beautiful wish.');
+    await user.click(screen.getByRole('button', { name: /send note/i }));
+
+    expect(await screen.findByText(/service is not connected on this deployment/i)).toBeInTheDocument();
+    expect(screen.queryByText('[object Object]')).not.toBeInTheDocument();
+  });
+
+  it('detects a static SPA response when the Netlify function was not deployed', async () => {
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
+      new Response('<!doctype html><html><body>The invitation</body></html>', {
+        status: 200,
+        headers: { 'Content-Type': 'text/html' }
+      })
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    const user = userEvent.setup();
+    render(<GuestNotesSection {...guestNotesProps} />);
+
+    await user.click(screen.getByRole('radio', { name: /post anonymously/i }));
+    await user.type(screen.getByRole('textbox', { name: /your note/i }), 'A beautiful wish.');
+    await user.click(screen.getByRole('button', { name: /send note/i }));
+
+    expect(await screen.findByText(/redeploy the complete Netlify project/i)).toBeInTheDocument();
+  });
+
   it('loads previous notes only when the visitor asks to see them', async () => {
     const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
       jsonResponse({

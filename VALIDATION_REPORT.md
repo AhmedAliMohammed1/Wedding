@@ -33,7 +33,7 @@ The environment’s npm CLI was supplied through a temporary runner; the command
 | `npm run check:dev` | Passed — local site and guest notes API completed a real write/read cycle |
 | `npm run typecheck` | Passed — strict TypeScript project build, no errors |
 | `npm run lint` | Passed — ESLint completed with zero errors and zero warnings |
-| `npm run test` | Passed — 6 test files, 16 tests |
+| `npm run test` | Passed — 6 test files, 18 tests |
 | `npm run build` | Passed — production `dist/` created |
 | `npm run test:e2e` | Passed — 8 Playwright projects |
 
@@ -43,6 +43,8 @@ The environment’s npm CLI was supplied through a temporary runner; the command
 - Absence of RSVP configuration, reservation forms, and meal fields
 - Named and anonymous guest note submissions
 - On-demand loading and display of previous notes
+- Nested Netlify error objects never render as `[object Object]`
+- Static HTML fallbacks are detected with clear redeployment guidance
 - Guest note API validation, spam blocking, chronological sorting, persistence calls, and rate-limit configuration
 - Accessible music play/pause toggle
 - Central configuration loading
@@ -64,11 +66,23 @@ Passed in installed Chromium-family browsers at:
 
 The test verified page load, entrance opening, scroll unlock, the venue as the third section, removal of the dress-code and reservation sections, absence of meal fields, countdown visibility, gallery navigation, venue/map markup, the guest note form, on-demand display of stored notes, absence of unexpected console errors, and no horizontal overflow.
 
+## Live guest-notes browser test
+
+Passed against the local Netlify-compatible runtime in a real browser:
+
+- Submitted a named note and received confirmation.
+- Submitted an anonymous note and received confirmation.
+- Displayed both notes in the wall.
+- Reopened the invitation in a fresh browser tab and confirmed both notes persisted.
+- Confirmed `[object Object]` never appeared.
+- Confirmed the browser console contained no errors.
+
 ## Netlify verification
 
 - `dist/index.html` exists at the deployment root.
 - No reservation or Netlify form markup is present.
 - The `/api/notes` Netlify Function is configured with per-IP rate limiting.
+- An explicit `/api/notes` rewrite is placed before the SPA fallback.
 - Netlify Blobs stores notes across deployments without client-side credentials.
 - SPA redirect, publish directory, and functions directory are configured in `netlify.toml`.
 - Event JSON-LD, canonical metadata, Open Graph metadata, manifest, robots, and sitemap files are present.

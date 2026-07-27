@@ -16,6 +16,8 @@ Use `wedding-invitation-sacred-garden-netlify.zip`, supplied next to the project
 
 The Netlify ZIP contains the buildable project at its root, including `package.json`, `netlify.toml`, and `netlify/functions/notes.mts`. Do not upload only `dist`; a static-only deployment cannot publish the notes API.
 
+If the page says that the guest-notes service is not connected, the site was deployed as static files without the Netlify Function. Redeploy the complete Netlify ZIP or use the Git deployment method below.
+
 ## Method 2: Git deployment
 
 1. Push the complete source project to GitHub, GitLab, or Bitbucket.

@@ -1,6 +1,12 @@
 import { Eye, EyeOff, Heart, LoaderCircle, Send } from 'lucide-react';
 import { type FormEvent, useState } from 'react';
-import type { GuestNote, GuestNoteMutationResponse, GuestNotesResponse } from '../../types/guestNote';
+import { readNotesApiResponse } from '../../lib/notesApi';
+import {
+  isGuestNote,
+  type GuestNote,
+  type GuestNoteMutationResponse,
+  type GuestNotesResponse
+} from '../../types/guestNote';
 import { SectionHeading } from '../common/SectionHeading';
 import { BotanicalCorner } from '../decorations/BotanicalCorner';
 
@@ -15,14 +21,6 @@ const formatNoteDate = (value: string) => {
     month: 'long',
     year: 'numeric'
   }).format(date);
-};
-
-const readJson = async <T,>(response: Response): Promise<T> => {
-  try {
-    return (await response.json()) as T;
-  } catch {
-    throw new Error('The note service returned an unexpected response.');
-  }
 };
 
 interface Props {
@@ -52,10 +50,13 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
       const response = await fetch('/api/notes', {
         headers: { Accept: 'application/json' }
       });
-      const data = await readJson<GuestNotesResponse & { error?: string }>(response);
+      const data = await readNotesApiResponse<GuestNotesResponse>(
+        response,
+        'The notes could not be loaded.'
+      );
 
-      if (!response.ok) {
-        throw new Error(data.error ?? 'The notes could not be loaded.');
+      if (!Array.isArray(data.notes) || !data.notes.every(isGuestNote)) {
+        throw new Error('The guest-notes service returned an invalid response. Please try again.');
       }
 
       setNotes(data.notes);
@@ -116,10 +117,13 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
           website
         })
       });
-      const data = await readJson<GuestNoteMutationResponse>(response);
+      const data = await readNotesApiResponse<GuestNoteMutationResponse>(
+        response,
+        'Your note could not be sent.'
+      );
 
-      if (!response.ok || !data.note) {
-        throw new Error(data.error ?? 'Your note could not be sent.');
+      if (!isGuestNote(data.note)) {
+        throw new Error('The guest-notes service did not confirm your note. Please try again.');
       }
 
       setMessage('');

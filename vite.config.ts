@@ -50,8 +50,30 @@ function invitationSeo(): Plugin {
   };
 }
 
+function localReactRefreshCompatibility(): Plugin {
+  return {
+    name: 'local-react-refresh-compatibility',
+    apply: 'serve',
+    configureServer(server) {
+      server.middlewares.use((_request, response, next) => {
+        response.removeHeader('Content-Security-Policy');
+        next();
+      });
+    }
+  };
+}
+
 export default defineConfig({
-  plugins: [netlify(), react(), invitationSeo()],
+  plugins: [
+    react(),
+    netlify({
+      // The production CSP remains in netlify.toml. Disabling header emulation
+      // locally keeps that CSP from blocking Vite's inline React-refresh preamble.
+      headers: { enabled: false }
+    }),
+    localReactRefreshCompatibility(),
+    invitationSeo()
+  ],
   build: {
     target: 'es2022',
     cssCodeSplit: true,

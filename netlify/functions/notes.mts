@@ -1,6 +1,6 @@
 import { getStore } from '@netlify/blobs';
 import type { Config, Context } from '@netlify/functions';
-import type { GuestNote } from '../../src/types/guestNote';
+import { isGuestNote, type GuestNote } from '../../src/types/guestNote';
 
 const STORE_NAME = 'wedding-guest-notes';
 const MAX_NAME_LENGTH = 60;
@@ -33,18 +33,6 @@ const normalizeMessage = (value: unknown) =>
         .replace(/\n{3,}/g, '\n\n')
         .trim()
     : '';
-
-const isGuestNote = (value: unknown): value is GuestNote => {
-  if (!value || typeof value !== 'object') return false;
-  const note = value as Partial<GuestNote>;
-  return (
-    typeof note.id === 'string' &&
-    typeof note.author === 'string' &&
-    typeof note.anonymous === 'boolean' &&
-    typeof note.message === 'string' &&
-    typeof note.createdAt === 'string'
-  );
-};
 
 const readNotes = async () => {
   const store = getStore({ name: STORE_NAME, consistency: 'strong' });
