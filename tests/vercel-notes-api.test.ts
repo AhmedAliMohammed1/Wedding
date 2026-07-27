@@ -15,7 +15,7 @@ vi.mock('@vercel/blob', async (importOriginal) => {
 });
 
 import { BlobAccessError, BlobStoreNotFoundError } from '@vercel/blob';
-import notesHandler, { createVercelGuestNotesStore } from '../api/notes';
+import { GET, POST, createVercelGuestNotesStore } from '../api/notes';
 import type { GuestNote } from '../src/types/guestNote';
 
 const blobResult = (note: unknown) => ({
@@ -49,7 +49,7 @@ describe('Vercel guest notes API', () => {
       })
     });
 
-    const response = await notesHandler.fetch(request);
+    const response = await POST(request);
     const data = (await response.json()) as { note: { author: string; id: string } };
 
     expect(response.status).toBe(201);
@@ -120,7 +120,7 @@ describe('Vercel guest notes API', () => {
       )
     );
 
-    const response = await notesHandler.fetch(new Request('https://wedding.example/api/notes'));
+    const response = await GET(new Request('https://wedding.example/api/notes'));
     const data = (await response.json()) as { notes: Array<{ id: string }> };
 
     expect(response.status).toBe(200);
@@ -139,7 +139,7 @@ describe('Vercel guest notes API', () => {
   it('returns clear setup guidance when the Blob store is not connected', async () => {
     vi.stubEnv('BLOB_READ_WRITE_TOKEN', '');
 
-    const response = await notesHandler.fetch(new Request('https://wedding.example/api/notes'));
+    const response = await GET(new Request('https://wedding.example/api/notes'));
     const data = (await response.json()) as { error: string };
 
     expect(response.status).toBe(424);
@@ -150,7 +150,7 @@ describe('Vercel guest notes API', () => {
   it('returns an actionable controlled error when the connected store no longer exists', async () => {
     blobMocks.list.mockRejectedValueOnce(new BlobStoreNotFoundError());
 
-    const response = await notesHandler.fetch(new Request('https://wedding.example/api/notes'));
+    const response = await GET(new Request('https://wedding.example/api/notes'));
     const data = (await response.json()) as { error: string };
 
     expect(response.status).toBe(503);
@@ -161,12 +161,12 @@ describe('Vercel guest notes API', () => {
   it('identifies unexpected storage failures instead of returning the generic unavailable error', async () => {
     blobMocks.list.mockRejectedValueOnce(new TypeError('simulated runtime failure'));
 
-    const response = await notesHandler.fetch(new Request('https://wedding.example/api/notes'));
+    const response = await GET(new Request('https://wedding.example/api/notes'));
     const data = (await response.json()) as { error: string };
 
     expect(response.status).toBe(503);
     expect(response.headers.get('X-Guest-Notes-Error')).toBe('storage');
-    expect(response.headers.get('X-Guest-Notes-Version')).toBe('2026-07-27.4');
-    expect(data.error).toMatch(/check the \/api\/notes Function log/i);
+    expect(response.headers.get('X-Guest-Notes-Version')).toBe('2026-07-27.5');
+    expect(data.error).toMatch(/TypeError.*Reference [0-9a-f]{8}/i);
   });
 });
