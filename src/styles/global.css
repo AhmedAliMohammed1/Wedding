@@ -254,8 +254,15 @@ a {
   border: 1px solid rgba(63, 74, 60, 0.4);
   border-radius: 50%;
   color: var(--olive);
-  font-family: "Cormorant Garamond", Georgia, serif;
-  letter-spacing: 0.11em;
+  font-family: "Great Vibes", cursive;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-shadow: 0 0.22em 0.75em rgba(63, 74, 60, 0.14);
+}
+
+.monogram > span {
+  transform: translateY(0.08em);
 }
 
 .monogram::before,
@@ -284,19 +291,19 @@ a {
 .monogram-small {
   width: 3rem;
   height: 3rem;
-  font-size: 0.85rem;
+  font-size: 1.2rem;
 }
 
 .monogram-medium {
   width: 5.5rem;
   height: 5.5rem;
-  font-size: 1.15rem;
+  font-size: 1.75rem;
 }
 
 .monogram-large {
   width: clamp(7.2rem, 29vw, 10rem);
   height: clamp(7.2rem, 29vw, 10rem);
-  font-size: clamp(1.15rem, 4vw, 1.7rem);
+  font-size: clamp(2.15rem, 7vw, 3.1rem);
 }
 
 .monogram-light {
@@ -573,7 +580,8 @@ a {
 }
 
 .entrance-names span {
-  padding-inline: 0.25rem;
+  display: inline-block;
+  margin-inline: 0.24em;
   color: var(--champagne);
   font-family: "Great Vibes", cursive;
   font-size: 1.25em;
@@ -767,7 +775,7 @@ a {
   position: relative;
   z-index: 1;
   display: block;
-  margin: -0.02em 0 -0.12em;
+  margin: 0.14em 0 -0.08em;
   color: var(--champagne);
   font-family: "Great Vibes", cursive;
   font-size: 0.56em;
@@ -1580,6 +1588,8 @@ a {
 }
 
 .closing-names span {
+  display: inline-block;
+  margin-inline: 0.24em;
   color: var(--champagne);
   font-family: "Great Vibes", cursive;
   font-size: 1.3em;
@@ -1623,9 +1633,9 @@ a {
 .footer-monogram {
   margin: 0 0 0.8rem;
   color: var(--champagne);
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 1.4rem;
-  letter-spacing: 0.2em;
+  font-family: "Great Vibes", cursive;
+  font-size: 1.9rem;
+  letter-spacing: 0.12em;
 }
 
 .site-footer p {
@@ -1717,7 +1727,7 @@ a {
   }
 
   .hero-names i {
-    margin: -0.06em 0 -0.16em;
+    margin: 0.1em 0 -0.12em;
   }
 
   .story-composition {
