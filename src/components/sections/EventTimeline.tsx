@@ -1,6 +1,5 @@
 import {
   CakeSlice,
-  Church,
   Clock3,
   Music,
   Sparkles,
@@ -9,10 +8,11 @@ import {
 } from 'lucide-react';
 import type { InvitationConfig, ScheduleIcon } from '../../types/invitation';
 import { SectionHeading } from '../common/SectionHeading';
+import { MosqueIcon } from '../icons/MosqueIcon';
 
 const iconMap: Record<ScheduleIcon, LucideIcon> = {
   arrival: Sparkles,
-  ceremony: Church,
+  ceremony: MosqueIcon,
   drinks: Wine,
   snacks: CakeSlice,
   celebration: Music
