@@ -39,7 +39,7 @@ export function VenueSection({ invitation }: { invitation: InvitationConfig }) {
               <span>
                 {invitation.displayDate}
                 <br />
-                Guest arrival from {invitation.schedule[0]?.time ?? '4:00 PM'}
+                Guest arrival from {invitation.schedule[0]?.time ?? '9:00 PM'}
               </span>
             </p>
             {isValidHttpUrl(invitation.venue.directionsUrl) ? (

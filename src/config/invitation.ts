@@ -31,7 +31,7 @@ export const invitation: InvitationConfig = {
   },
   schedule: [
     {
-      time: '4:00 PM',
+      time: '9:00 PM',
       title: 'Guest arrival',
       description: 'A welcome drink among the garden paths.',
       icon: 'arrival'
