@@ -1,4 +1,4 @@
-export type ScheduleIcon = 'arrival' | 'ceremony' | 'drinks' | 'dinner' | 'celebration';
+export type ScheduleIcon = 'arrival' | 'ceremony' | 'drinks' | 'snacks' | 'celebration';
 
 export interface ScheduleItem {
   time: string;

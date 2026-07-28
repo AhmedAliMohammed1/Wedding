@@ -7,11 +7,18 @@ import { invitation } from '../src/config/invitation';
 describe('invitation configuration and optional sections', () => {
   it('loads the central invitation configuration', () => {
     expect(invitation.brideName).toBe('Ahmed');
-    expect(invitation.weddingDate).toBe('2026-08-11T16:00:00+03:00');
+    expect(invitation.weddingDate).toBe('2026-08-11T21:00:00+03:00');
     expect(invitation.blessing).toBe('﴿ بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ ﴾');
     expect(invitation.music.src).toBe('/assets/audio/divenire.mp3');
     expect(invitation.contact.email).toBe('ahmedelsaify213@gmail.com');
     expect(invitation.schedule).toHaveLength(5);
+    expect(invitation.schedule.map(({ time, title }) => ({ time, title }))).toEqual([
+      { time: '9:00 PM', title: 'Guest arrival' },
+      { time: '9:30 PM', title: 'Ceremony' },
+      { time: '10:00 PM', title: 'Cocktail hour' },
+      { time: '11:00 PM', title: 'Small snacks' },
+      { time: '11:30 PM', title: 'Celebration' }
+    ]);
     expect(invitation.gallery.every((image) => image.src.startsWith('/assets/images/'))).toBe(true);
   });
 

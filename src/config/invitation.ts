@@ -4,7 +4,7 @@ export const invitation: InvitationConfig = {
   brideName: 'Ahmed',
   groomName: 'Nada',
   initials: 'A · N',
-  weddingDate: '2026-08-11T16:00:00+03:00',
+  weddingDate: '2026-08-11T21:00:00+03:00',
   endDate: '2026-08-12T00:30:00+03:00',
   timezone: 'Africa/Cairo',
   displayDate: 'Tuesday, August 11, 2026',
@@ -37,27 +37,27 @@ export const invitation: InvitationConfig = {
       icon: 'arrival'
     },
     {
-      time: '4:30 PM',
+      time: '9:30 PM',
       title: 'Ceremony',
       description: 'Our vows beneath the old chestnut tree.',
       icon: 'ceremony'
     },
     {
-      time: '5:30 PM',
+      time: '10:00 PM',
       title: 'Cocktail hour',
-      description: 'Seasonal canapés, music, and photographs.',
+      description: 'Drinks, music, and photographs with the people we love.',
       icon: 'drinks'
     },
     {
-      time: '7:00 PM',
-      title: 'Garden dinner',
-      description: 'A candlelit table shared with our favourite people.',
-      icon: 'dinner'
+      time: '11:00 PM',
+      title: 'Small snacks',
+      description: 'A light selection of small bites for everyone to enjoy.',
+      icon: 'snacks'
     },
     {
-      time: '9:00 PM',
+      time: '11:30 PM',
       title: 'Celebration',
-      description: 'Dancing, dessert, and a night under the stars.',
+      description: 'Dancing and unforgettable memories until the event ends.',
       icon: 'celebration'
     }
   ],

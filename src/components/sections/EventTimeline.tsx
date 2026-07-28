@@ -14,7 +14,7 @@ const iconMap: Record<ScheduleIcon, LucideIcon> = {
   arrival: Sparkles,
   ceremony: Church,
   drinks: Wine,
-  dinner: CakeSlice,
+  snacks: CakeSlice,
   celebration: Music
 };
 
