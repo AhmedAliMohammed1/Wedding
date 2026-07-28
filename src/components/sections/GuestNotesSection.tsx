@@ -1,16 +1,53 @@
-import { Eye, EyeOff, Heart, LoaderCircle, Send } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Eye, EyeOff, Heart, LoaderCircle, Send } from 'lucide-react';
 import { type FormEvent, useState } from 'react';
 import { readNotesApiResponse } from '../../lib/notesApi';
 import {
   isGuestNote,
+  isGuestNotesPagination,
   type GuestNote,
   type GuestNoteMutationResponse,
+  type GuestNotesPagination,
   type GuestNotesResponse
 } from '../../types/guestNote';
 import { SectionHeading } from '../common/SectionHeading';
 import { BotanicalCorner } from '../decorations/BotanicalCorner';
 
 const MAX_MESSAGE_LENGTH = 500;
+const NOTE_PREVIEW_LENGTH = 220;
+const NOTES_PAGE_SIZE = 6;
+const EMPTY_PAGINATION: GuestNotesPagination = {
+  page: 1,
+  pageSize: NOTES_PAGE_SIZE,
+  total: 0,
+  totalPages: 1,
+  hasPreviousPage: false,
+  hasNextPage: false
+};
+
+const containsUnsafeCode = (value: string) =>
+  /<\s*\/?\s*[a-z][^>]*>/iu.test(value) ||
+  /\b(?:javascript|vbscript)\s*:/iu.test(value) ||
+  /\bon[a-z]+\s*=/iu.test(value) ||
+  /(?:'\s*(?:or|and)\s*['"\d])|(?:;\s*(?:drop|delete|truncate|alter)\s+(?:table|database|schema)\b)|(?:\bunion\s+select\b)/iu.test(
+    value
+  );
+
+const looksLikeSpam = (value: string) => {
+  const compact = value.toLocaleLowerCase().replace(/[\s\p{P}\p{S}]/gu, '');
+  const linkCount = value.match(/\b(?:https?:\/\/|www\.)/giu)?.length ?? 0;
+
+  return (
+    /(.)\1{15,}/u.test(value) ||
+    (compact.length >= 24 && new Set([...compact]).size <= 2) ||
+    linkCount > 1
+  );
+};
+
+const previewNote = (value: string) => {
+  const characters = [...value];
+  if (characters.length <= NOTE_PREVIEW_LENGTH) return value;
+  return `${characters.slice(0, NOTE_PREVIEW_LENGTH).join('').trimEnd()}…`;
+};
 
 const formatNoteDate = (value: string) => {
   const date = new Date(value);
@@ -41,13 +78,15 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
   const [notesLoading, setNotesLoading] = useState(false);
   const [notesError, setNotesError] = useState('');
   const [notes, setNotes] = useState<GuestNote[]>([]);
+  const [pagination, setPagination] = useState<GuestNotesPagination>(EMPTY_PAGINATION);
+  const [expandedNoteIds, setExpandedNoteIds] = useState<Set<string>>(() => new Set());
 
-  const loadNotes = async () => {
+  const loadNotes = async (page = 1) => {
     setNotesLoading(true);
     setNotesError('');
 
     try {
-      const response = await fetch('/api/notes', {
+      const response = await fetch(`/api/notes?page=${page}&pageSize=${NOTES_PAGE_SIZE}`, {
         headers: { Accept: 'application/json' }
       });
       const data = await readNotesApiResponse<GuestNotesResponse>(
@@ -55,11 +94,17 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
         'The notes could not be loaded.'
       );
 
-      if (!Array.isArray(data.notes) || !data.notes.every(isGuestNote)) {
+      if (
+        !Array.isArray(data.notes) ||
+        !data.notes.every(isGuestNote) ||
+        !isGuestNotesPagination(data.pagination)
+      ) {
         throw new Error('The guest-notes service returned an invalid response. Please try again.');
       }
 
       setNotes(data.notes);
+      setPagination(data.pagination);
+      setExpandedNoteIds(new Set());
       setNotesLoaded(true);
     } catch (error) {
       setNotesError(error instanceof Error ? error.message : 'The notes could not be loaded.');
@@ -76,7 +121,7 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
 
     setNotesOpen(true);
     if (!notesLoaded && !notesLoading) {
-      void loadNotes();
+      void loadNotes(1);
     }
   };
 
@@ -95,6 +140,18 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
 
     if (trimmedMessage.length < 2) {
       setSubmitError('Please write a short note before sending.');
+      return;
+    }
+
+    const submittedName = identity === 'named' ? trimmedName : '';
+
+    if (containsUnsafeCode(submittedName) || containsUnsafeCode(trimmedMessage)) {
+      setSubmitError('Please write a plain-text note without HTML, scripts, or database commands.');
+      return;
+    }
+
+    if (looksLikeSpam(submittedName) || looksLikeSpam(trimmedMessage)) {
+      setSubmitError('Please write a genuine note without excessive repeated characters or links.');
       return;
     }
 
@@ -134,7 +191,25 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
       );
 
       if (notesOpen) {
-        setNotes((current) => [data.note as GuestNote, ...current.filter((note) => note.id !== data.note?.id)]);
+        setNotes((current) =>
+          [data.note as GuestNote, ...current.filter((note) => note.id !== data.note?.id)].slice(
+            0,
+            NOTES_PAGE_SIZE
+          )
+        );
+        setPagination((current) => {
+          const total = current.total + 1;
+          const totalPages = Math.max(1, Math.ceil(total / NOTES_PAGE_SIZE));
+          return {
+            page: 1,
+            pageSize: NOTES_PAGE_SIZE,
+            total,
+            totalPages,
+            hasPreviousPage: false,
+            hasNextPage: totalPages > 1
+          };
+        });
+        setExpandedNoteIds(new Set());
         setNotesLoaded(true);
       }
     } catch (error) {
@@ -275,7 +350,11 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
             {!notesLoading && notesError ? (
               <div className="notes-wall-state" role="alert">
                 <p>{notesError}</p>
-                <button className="button button-light" type="button" onClick={() => void loadNotes()}>
+                <button
+                  className="button button-light"
+                  type="button"
+                  onClick={() => void loadNotes(pagination.page)}
+                >
                   Try again
                 </button>
               </div>
@@ -286,22 +365,75 @@ export function GuestNotesSection({ coupleNames, title, description }: Props) {
             ) : null}
 
             {!notesLoading && !notesError && notes.length > 0 ? (
-              <ul className="guest-notes-list">
-                {notes.map((note) => (
-                  <li key={note.id}>
-                    <article className="guest-note-card">
-                      <Heart aria-hidden="true" />
-                      <blockquote>{note.message}</blockquote>
-                      <footer>
-                        <strong>{note.author}</strong>
-                        {formatNoteDate(note.createdAt) ? (
-                          <time dateTime={note.createdAt}>{formatNoteDate(note.createdAt)}</time>
-                        ) : null}
-                      </footer>
-                    </article>
-                  </li>
-                ))}
-              </ul>
+              <>
+                <ul className="guest-notes-list">
+                  {notes.map((note) => {
+                    const isLongNote = [...note.message].length > NOTE_PREVIEW_LENGTH;
+                    const isExpanded = expandedNoteIds.has(note.id);
+                    const messageId = `guest-note-message-${note.id}`;
+
+                    return (
+                      <li key={note.id}>
+                        <article className={`guest-note-card${isExpanded ? ' is-expanded' : ''}`}>
+                          <Heart aria-hidden="true" />
+                          <blockquote id={messageId}>
+                            {isExpanded ? note.message : previewNote(note.message)}
+                          </blockquote>
+                          {isLongNote ? (
+                            <button
+                              className="note-expand-button"
+                              type="button"
+                              aria-expanded={isExpanded}
+                              aria-controls={messageId}
+                              onClick={() =>
+                                setExpandedNoteIds((current) => {
+                                  const next = new Set(current);
+                                  if (next.has(note.id)) next.delete(note.id);
+                                  else next.add(note.id);
+                                  return next;
+                                })
+                              }
+                            >
+                              {isExpanded ? 'Show less' : 'Show more'}
+                            </button>
+                          ) : null}
+                          <footer>
+                            <strong>{note.author}</strong>
+                            {formatNoteDate(note.createdAt) ? (
+                              <time dateTime={note.createdAt}>{formatNoteDate(note.createdAt)}</time>
+                            ) : null}
+                          </footer>
+                        </article>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <nav className="notes-pagination" aria-label="Guest notes pages">
+                  <button
+                    type="button"
+                    aria-label="Previous notes page"
+                    disabled={notesLoading || !pagination.hasPreviousPage}
+                    onClick={() => void loadNotes(pagination.page - 1)}
+                  >
+                    <ChevronLeft aria-hidden="true" />
+                  </button>
+                  <p aria-live="polite">
+                    Page <strong>{pagination.page}</strong> of {pagination.totalPages}
+                    {' '}
+                    <span>
+                      {pagination.total} {pagination.total === 1 ? 'note' : 'notes'}
+                    </span>
+                  </p>
+                  <button
+                    type="button"
+                    aria-label="Next notes page"
+                    disabled={notesLoading || !pagination.hasNextPage}
+                    onClick={() => void loadNotes(pagination.page + 1)}
+                  >
+                    <ChevronRight aria-hidden="true" />
+                  </button>
+                </nav>
+              </>
             ) : null}
           </div>
         ) : null}

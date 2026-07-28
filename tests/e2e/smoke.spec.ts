@@ -8,7 +8,7 @@ test('invitation opens and core sections remain usable without overflow', async 
     }
   });
   await page.route('https://www.google.com/maps/**', (route) => route.abort());
-  await page.route('**/api/notes', async (route) => {
+  await page.route('**/api/notes**', async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -21,7 +21,15 @@ test('invitation opens and core sections remain usable without overflow', async 
             message: 'May your days together always feel like home.',
             createdAt: '2026-07-27T12:00:00.000Z'
           }
-        ]
+        ],
+        pagination: {
+          page: 1,
+          pageSize: 6,
+          total: 1,
+          totalPages: 1,
+          hasPreviousPage: false,
+          hasNextPage: false
+        }
       })
     });
   });

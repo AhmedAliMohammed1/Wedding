@@ -59,9 +59,11 @@ The “A gentle note” section lets visitors:
 
 - publish a note with their name;
 - publish as **Anonymous** without storing their entered name;
-- reveal or hide all previous notes with one button.
+- reveal or hide previous notes with one button;
+- browse six notes at a time with previous/next page controls;
+- expand long notes with **Show more** and collapse them with **Show less**.
 
-The browser sends notes to `/api/notes`. A shared server handler validates the content, discards names for anonymous posts, and blocks a hidden spam field. On Vercel, a native Function stores each note in a Vercel Blob store and automatically supports either Private or Public access. On Netlify, the equivalent Function uses a strongly consistent Netlify Blobs store and platform rate limiting. Notes are rendered as plain React text, so visitor HTML is never injected into the page.
+The browser sends notes to `/api/notes`. A shared server handler validates the content, discards names for anonymous posts, blocks a hidden spam field, rejects excessive repetition and injection-like text, and limits each visitor fingerprint to five accepted notes per ten minutes. Previously stored unsafe payloads are excluded from API results. On Vercel, a native Function stores each note in a Vercel Blob store and automatically supports either Private or Public access. On Netlify, the equivalent Function uses a strongly consistent Netlify Blobs store and matching platform rate limiting. Notes are rendered as plain React text, so visitor HTML is never injected into the page.
 
 For Vercel, follow `VERCEL_DEPLOYMENT.md`. For Netlify, follow `NETLIFY_DEPLOYMENT.md`.
 
@@ -84,7 +86,7 @@ Because the notes wall includes a serverless function, deploy the supplied Netli
 
 ## Assets
 
-All runtime assets are local in `public/assets`. The Le Palace Garden section uses the supplied venue photograph; the remaining decorative and gallery images are original abstract botanical placeholders. The configured background music is stored locally from the selected reference invitation; confirm that you have permission to use it before public distribution. See [ASSET_REPLACEMENT_GUIDE.md](ASSET_REPLACEMENT_GUIDE.md).
+All runtime assets are local in `public/assets`. The Le Palace Garden section and the couple/gallery sections use the supplied photographs and illustrations; remaining decorative backgrounds are original botanical placeholders. The configured background music is stored locally from the selected reference invitation; confirm that you have permission to use it before public distribution. See [ASSET_REPLACEMENT_GUIDE.md](ASSET_REPLACEMENT_GUIDE.md).
 
 ## Accessibility
 
@@ -103,6 +105,6 @@ Current Chrome, Edge, Firefox, Safari, iOS Safari, and Android Chrome are suppor
 - **Vercel cannot access the connected store:** Reconnect the store, enable `BLOB_STORE_ID` for Production (or `BLOB_READ_WRITE_TOKEN` for an older connection), and redeploy.
 - **Vercel reports a function error:** Copy the eight-character reference shown on the invitation and find the matching entry in the `/api/notes` Function log.
 - **The notes service is not connected:** Deploy the complete source project so the host receives `/api/notes`; a `dist`-only upload contains no server function.
-- **A note is rejected:** Keep the name between 2 and 60 characters when signing it and the message between 2 and 500 characters.
+- **A note is rejected:** Keep the name between 2 and 60 characters and the message between 2 and 500 characters; use plain text without code, multiple links, or excessive repeated characters.
 - **A replaced image appears cropped:** Use the dimensions and focal-point advice in the asset guide.
 - **The countdown is wrong:** Use an ISO date with an explicit UTC offset, and set the IANA timezone alongside it.

@@ -36,7 +36,7 @@ const statusMessage = (status: number, fallback: string) => {
   if (status === 401 || status === 403) {
     return "The guest-notes service is blocked by this site's access settings.";
   }
-  if (status === 429) return 'Too many notes were sent at once. Please wait a minute and try again.';
+  if (status === 429) return 'Too many notes were sent from this device. Please wait ten minutes and try again.';
   if (status >= 500) return SERVICE_UNAVAILABLE;
   return fallback;
 };

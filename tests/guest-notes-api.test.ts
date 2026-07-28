@@ -46,6 +46,7 @@ describe('guest notes API', () => {
       anonymous: true
     });
     expect(storedNote.id).toMatch(/^[0-9a-f-]{36}$/);
+    expect(storedNote).toHaveProperty('clientHash');
   });
 
   it('rejects invalid or automated submissions before storage', async () => {
@@ -92,10 +93,14 @@ describe('guest notes API', () => {
     );
 
     const response = await notesHandler(new Request('https://example.com/api/notes'), {} as never);
-    const data = (await response.json()) as { notes: Array<{ id: string }> };
+    const data = (await response.json()) as {
+      notes: Array<{ id: string }>;
+      pagination: { page: number; total: number; totalPages: number };
+    };
 
     expect(response.status).toBe(200);
     expect(data.notes.map((note) => note.id)).toEqual(['newer', 'older']);
+    expect(data.pagination).toMatchObject({ page: 1, total: 2, totalPages: 1 });
   });
 
   it('returns a traceable runtime error instead of a generic unavailable response', async () => {
@@ -107,7 +112,7 @@ describe('guest notes API', () => {
     expect(response.status).toBe(500);
     expect(response.headers.get('X-Guest-Notes-Error')).toBe('runtime');
     expect(response.headers.get('X-Guest-Notes-Reference')).toMatch(/^[0-9a-f]{8}$/);
-    expect(response.headers.get('X-Guest-Notes-Version')).toBe('2026-07-27.4');
+    expect(response.headers.get('X-Guest-Notes-Version')).toBe('2026-07-28.1');
     expect(data.error).toMatch(/TypeError.*reference [0-9a-f]{8}/i);
   });
 
@@ -115,8 +120,32 @@ describe('guest notes API', () => {
     expect(config.path).toBe('/api/notes');
     expect(config.rateLimit).toMatchObject({
       aggregateBy: ['ip'],
-      windowLimit: 30,
-      windowSize: 60
+      windowLimit: 5,
+      windowSize: 600
     });
+  });
+
+  it.each([
+    ['script markup', "<script>alert('xss')</script>"],
+    ['SQL injection text', "' OR '1'='1'; DROP TABLE users;--"],
+    ['repeated-character spam', 'A'.repeat(500)]
+  ])('rejects %s before storage', async (_label, message) => {
+    const response = await notesHandler(
+      new Request('https://example.com/api/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          anonymous: true,
+          name: '',
+          message,
+          website: ''
+        })
+      }),
+      {} as never
+    );
+
+    expect(response.status).toBe(400);
+    expect(blobMocks.list).not.toHaveBeenCalled();
+    expect(blobMocks.setJSON).not.toHaveBeenCalled();
   });
 });

@@ -24,6 +24,25 @@ const guestNotesProps = {
   description: 'Share a wish, a dua, or a favourite memory.'
 };
 
+const pagination = (
+  overrides: Partial<{
+    page: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
+    hasPreviousPage: boolean;
+    hasNextPage: boolean;
+  }> = {}
+) => ({
+  page: 1,
+  pageSize: 6,
+  total: 0,
+  totalPages: 1,
+  hasPreviousPage: false,
+  hasNextPage: false,
+  ...overrides
+});
+
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -170,7 +189,8 @@ describe('guest notes section', () => {
             message: 'May every year be sweeter than the last.',
             createdAt: '2026-07-27T11:00:00.000Z'
           }
-        ]
+        ],
+        pagination: pagination({ total: 2 })
       })
     );
     vi.stubGlobal('fetch', fetchMock);
@@ -184,7 +204,131 @@ describe('guest notes section', () => {
     expect(screen.getByText('May every year be sweeter than the last.')).toBeInTheDocument();
     expect(screen.getByText('Omar')).toBeInTheDocument();
     expect(screen.getByText('Anonymous')).toBeInTheDocument();
-    expect(fetchMock).toHaveBeenCalledWith('/api/notes', {
+    expect(fetchMock).toHaveBeenCalledWith('/api/notes?page=1&pageSize=6', {
+      headers: { Accept: 'application/json' }
+    });
+  });
+
+  it('blocks script and injection text before it reaches the API', async () => {
+    const fetchMock = vi.fn<typeof fetch>();
+    vi.stubGlobal('fetch', fetchMock);
+    const user = userEvent.setup();
+    render(<GuestNotesSection {...guestNotesProps} />);
+
+    await user.click(screen.getByRole('radio', { name: /post anonymously/i }));
+    await user.type(
+      screen.getByRole('textbox', { name: /your note/i }),
+      "<script>alert('xss')</script>"
+    );
+    await user.click(screen.getByRole('button', { name: /send note/i }));
+
+    expect(await screen.findByText(/plain-text note without html/i)).toBeInTheDocument();
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it('collapses long notes and reveals the full text on request', async () => {
+    const longMessage = Array.from(
+      { length: 8 },
+      (_, index) => `Memory ${index + 1} brings another beautiful reason to celebrate.`
+    ).join(' ');
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(
+      jsonResponse({
+        notes: [
+          {
+            id: 'long-note',
+            author: 'Mariam',
+            anonymous: false,
+            message: longMessage,
+            createdAt: '2026-07-28T12:00:00.000Z'
+          }
+        ],
+        pagination: pagination({ total: 1 })
+      })
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    const user = userEvent.setup();
+    render(<GuestNotesSection {...guestNotesProps} />);
+
+    await user.click(screen.getByRole('button', { name: /show all notes/i }));
+    expect(await screen.findByRole('button', { name: /show more/i })).toHaveAttribute(
+      'aria-expanded',
+      'false'
+    );
+    expect(screen.queryByText(longMessage)).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: /show more/i }));
+    expect(screen.getByText(longMessage)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /show less/i })).toHaveAttribute(
+      'aria-expanded',
+      'true'
+    );
+
+    await user.click(screen.getByRole('button', { name: /show less/i }));
+    expect(screen.queryByText(longMessage)).not.toBeInTheDocument();
+  });
+
+  it('loads notes one bounded page at a time', async () => {
+    const firstPageNotes = Array.from({ length: 6 }, (_, index) => ({
+      id: `page-one-${index}`,
+      author: `Guest ${index + 1}`,
+      anonymous: false,
+      message: `First page wish ${index + 1}.`,
+      createdAt: `2026-07-28T1${index}:00:00.000Z`
+    }));
+    const secondPageNotes = [
+      {
+        id: 'page-two-1',
+        author: 'Guest 7',
+        anonymous: false,
+        message: 'A wish from the second page.',
+        createdAt: '2026-07-28T05:00:00.000Z'
+      },
+      {
+        id: 'page-two-2',
+        author: 'Guest 8',
+        anonymous: false,
+        message: 'Another wish from the second page.',
+        createdAt: '2026-07-28T04:00:00.000Z'
+      }
+    ];
+    const fetchMock = vi.fn<typeof fetch>().mockImplementation((input) => {
+      const requestedUrl =
+        typeof input === 'string'
+          ? input
+          : input instanceof URL
+            ? input.href
+            : input.url;
+      const pageTwo = requestedUrl.includes('page=2');
+      return Promise.resolve(
+        jsonResponse({
+          notes: pageTwo ? secondPageNotes : firstPageNotes,
+          pagination: pageTwo
+            ? pagination({
+                page: 2,
+                total: 8,
+                totalPages: 2,
+                hasPreviousPage: true
+              })
+            : pagination({ total: 8, totalPages: 2, hasNextPage: true })
+        })
+      );
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    const user = userEvent.setup();
+    render(<GuestNotesSection {...guestNotesProps} />);
+
+    await user.click(screen.getByRole('button', { name: /show all notes/i }));
+    expect(await screen.findByText('First page wish 1.')).toBeInTheDocument();
+    expect(screen.getByRole('navigation', { name: /guest notes pages/i })).toHaveTextContent(
+      /page\s*1\s*of\s*2/i
+    );
+
+    await user.click(screen.getByRole('button', { name: /next notes page/i }));
+    expect(await screen.findByText('A wish from the second page.')).toBeInTheDocument();
+    expect(screen.getByRole('navigation', { name: /guest notes pages/i })).toHaveTextContent(
+      /page\s*2\s*of\s*2/i
+    );
+    expect(fetchMock).toHaveBeenCalledWith('/api/notes?page=2&pageSize=6', {
       headers: { Accept: 'application/json' }
     });
   });

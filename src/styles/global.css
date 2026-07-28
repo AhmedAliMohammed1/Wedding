@@ -1774,15 +1774,23 @@ div.notes-wall-state {
 .guest-note-card {
   position: relative;
   display: flex;
-  height: 100%;
-  min-height: 13rem;
+  height: 20rem;
+  min-height: 17rem;
+  max-height: 20rem;
   flex-direction: column;
+  overflow: hidden;
   padding: 1.5rem;
   border: 1px solid rgba(247, 242, 232, 0.18);
   border-radius: 1.35rem;
   background: rgba(247, 242, 232, 0.1);
   box-shadow: 0 18px 48px rgba(16, 23, 17, 0.16);
   backdrop-filter: blur(10px);
+}
+
+.guest-note-card.is-expanded {
+  height: auto;
+  min-height: 20rem;
+  max-height: none;
 }
 
 .guest-note-card > svg {
@@ -1795,13 +1803,39 @@ div.notes-wall-state {
 
 .guest-note-card blockquote {
   flex: 1;
+  max-height: 9.7rem;
   margin: 1rem 0 1.5rem;
+  overflow: hidden;
   color: var(--cream);
   font-family: "Cormorant Garamond", Georgia, serif;
   font-size: clamp(1.15rem, 2.5vw, 1.35rem);
   line-height: 1.55;
   overflow-wrap: anywhere;
   white-space: pre-line;
+}
+
+.guest-note-card.is-expanded blockquote {
+  max-height: none;
+  overflow: visible;
+}
+
+.note-expand-button {
+  align-self: flex-start;
+  margin: -0.65rem 0 1rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--champagne);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-decoration: underline;
+  text-underline-offset: 0.24em;
+}
+
+.note-expand-button:hover,
+.note-expand-button:focus-visible {
+  color: var(--cream);
 }
 
 .guest-note-card footer {
@@ -1823,6 +1857,64 @@ div.notes-wall-state {
 .guest-note-card time {
   color: rgba(247, 242, 232, 0.52);
   font-size: 0.58rem;
+}
+
+.notes-pagination {
+  display: flex;
+  width: min(100%, 24rem);
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 2rem auto 0;
+}
+
+.notes-pagination button {
+  display: grid;
+  width: 2.8rem;
+  height: 2.8rem;
+  flex: none;
+  place-items: center;
+  border: 1px solid rgba(247, 242, 232, 0.28);
+  border-radius: 50%;
+  background: rgba(247, 242, 232, 0.08);
+  color: var(--cream);
+}
+
+.notes-pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.32;
+}
+
+.notes-pagination button:not(:disabled):hover,
+.notes-pagination button:not(:disabled):focus-visible {
+  border-color: rgba(247, 242, 232, 0.58);
+  background: rgba(247, 242, 232, 0.14);
+}
+
+.notes-pagination button svg {
+  width: 1rem;
+  stroke-width: 1.7;
+}
+
+.notes-pagination p {
+  margin: 0;
+  color: rgba(247, 242, 232, 0.72);
+  font-size: 0.67rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.notes-pagination p strong {
+  color: var(--champagne);
+  font-size: 0.82rem;
+}
+
+.notes-pagination p span {
+  display: block;
+  margin-top: 0.3rem;
+  color: rgba(247, 242, 232, 0.48);
+  font-size: 0.56rem;
 }
 
 .closing-section {
